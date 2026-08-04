@@ -20,7 +20,7 @@ export default function PortfolioCard({ project }: { project: Project }) {
           </span>
         </div>
       </div>
-      <div className="text-sm tracking-widest text-muted mb-1">{project.category}</div>
+      <div className="text-sm text-muted mb-1">{project.tags.join(" / ")}</div>
       <h3 className="font-heading text-2xl group-hover:text-muted transition-colors">
         {project.title}
       </h3>

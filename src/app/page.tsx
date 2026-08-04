@@ -5,6 +5,8 @@ import SectionHeading from "@/components/SectionHeading";
 import PortfolioMosaic from "@/components/PortfolioMosaic";
 import BlogCard from "@/components/BlogCard";
 import NewsCard from "@/components/NewsCard";
+import AwardCard from "@/components/AwardCard";
+import RotatingIcon from "@/components/RotatingIcon";
 import TeamShowcase from "@/components/TeamShowcase";
 import CreativeGrid from "@/components/CreativeGrid";
 import ClientsLogoGrid from "@/components/ClientsLogoGrid";
@@ -21,6 +23,14 @@ import { stats } from "@/data/stats";
 import { clients } from "@/data/clients";
 import { workAccordion } from "@/data/process";
 import { team } from "@/data/team";
+import { awards } from "@/data/awards";
+
+const iconRotations = [
+  { angle: 36, delay: 0 },
+  { angle: -48, delay: 0.7 },
+  { angle: 60, delay: 1.4 },
+  { angle: -30, delay: 2.1 },
+];
 
 export default function Home() {
   return (
@@ -28,38 +38,57 @@ export default function Home() {
       <HeroSlider />
 
       {/* Services strip */}
-      <section className="border-y border-hairline">
+      <section className="py-20 md:py-28">
         <RevealGroup className="container-page grid grid-cols-2 md:grid-cols-4">
           {coreServices.map((s, i) => (
-            <RevealItem
-              key={s.title}
-              className={`py-10 px-4 ${i !== 0 ? "border-l border-hairline" : ""}`}
-            >
-              <h3 className="font-heading text-2xl mb-2">{s.title}</h3>
-              <p className="text-muted text-sm normal-case">{s.short}</p>
+            <RevealItem key={s.title} className="py-10 px-4 flex flex-col items-center text-center">
+              <RotatingIcon
+                src={s.icon}
+                angle={iconRotations[i % iconRotations.length].angle}
+                delay={iconRotations[i % iconRotations.length].delay}
+              />
+              <h3 className="font-heading text-[26px] mb-2">{s.title}</h3>
+              <p className="text-muted text-[16px] normal-case">{s.short}</p>
             </RevealItem>
           ))}
         </RevealGroup>
       </section>
 
       {/* Portfolio teaser */}
-      <section className="py-20 md:py-28">
-        <Reveal className="container-page">
-          <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
-            <SectionHeading eyebrow="Selected Work" title="Recent Projects" />
-            <Link href="/portfolio" className="font-heading text-sm tracking-widest hover:text-muted transition-colors">
-              View All Work _
-            </Link>
-          </div>
-        </Reveal>
+      <section className="pb-20 md:pb-28">
         <Reveal delay={0.1}>
           <PortfolioMosaic projects={projects} />
         </Reveal>
       </section>
 
+      {/* Latest News */}
+      <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+        <Reveal>
+          <SectionHeading
+            title="NEWS"
+            titleClassName="text-[70px]"
+            underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
+          />
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="flex flex-col gap-10">
+            {posts.slice(0, 2).map((post) => (
+              <NewsCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </Reveal>
+        <Reveal delay={0.2}>
+          <div className="flex flex-col gap-10">
+            {posts.slice(2, 4).map((post) => (
+              <NewsCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
       {/* Stats */}
-      <section className="container-page pb-20 md:pb-28">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="bg-surface py-20 md:py-28">
+        <div className="container-page grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((s) => (
             <StatBlock key={s.label} label={s.label} value={s.value} />
           ))}
@@ -70,7 +99,7 @@ export default function Home() {
       <section className="bg-surface py-16">
         <div className="container-page">
           <Reveal>
-            <SectionHeading title="Our Clients" />
+            <SectionHeading title="Our Clients" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
           </Reveal>
           <Reveal delay={0.1} className="mt-12">
             <ClientsLogoGrid clients={clients} />
@@ -87,7 +116,7 @@ export default function Home() {
       <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         <Reveal>
           <div>
-            <SectionHeading eyebrow="Process" title="The Way We Work" />
+            <SectionHeading eyebrow="Process" title="The Way We Work" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
             <p className="text-muted mt-6 max-w-md normal-case">
               No account layers, no scope surprises. Every engagement runs with
               a small, senior team from kickoff to launch.
@@ -99,21 +128,20 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* Latest News */}
+      {/* Awards */}
       <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-12 items-start border-t border-hairline">
         <Reveal>
           <div>
-            <SectionHeading eyebrow="Journal" title="Latest News" />
+            <SectionHeading eyebrow="Recognition" title="Awards" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
             <p className="text-muted mt-6 max-w-md normal-case">
-              Ideas, process notes, and the occasional strong opinion, straight
-              from the team doing the work.
+              A few of the honors our work has picked up along the way.
             </p>
           </div>
         </Reveal>
         <Reveal delay={0.15}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
-            {posts.slice(0, 4).map((post) => (
-              <NewsCard key={post.slug} post={post} />
+            {awards.map((award) => (
+              <AwardCard key={award.title} award={award} />
             ))}
           </div>
         </Reveal>
@@ -123,7 +151,7 @@ export default function Home() {
       <section className="py-20 md:py-28 border-t border-hairline">
         <Reveal className="container-page">
           <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
-            <SectionHeading eyebrow="The People" title="Meet The Team" />
+            <SectionHeading eyebrow="The People" title="Meet The Team" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
             <Link href="/team" className="font-heading text-sm tracking-widest hover:text-muted transition-colors">
               View Full Team _
             </Link>
@@ -138,7 +166,7 @@ export default function Home() {
       <section className="bg-ink text-paper py-20 md:py-28">
         <div className="container-page">
           <Reveal>
-            <SectionHeading eyebrow="Testimonials" title="What Clients Say" align="center" />
+            <SectionHeading eyebrow="Testimonials" title="What Clients Say" align="center" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
           </Reveal>
           <div className="mt-12">
             <TestimonialsCarousel items={testimonials} />
@@ -150,7 +178,7 @@ export default function Home() {
       <section className="container-page py-20 md:py-28">
         <Reveal>
           <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
-            <SectionHeading eyebrow="Journal" title="From The Blog" />
+            <SectionHeading eyebrow="Journal" title="From The Blog" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
             <Link href="/blog" className="font-heading text-sm tracking-widest hover:text-muted transition-colors">
               View All Posts _
             </Link>
@@ -177,7 +205,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-ink/50" />
         <Reveal className="relative container-page text-paper text-center w-full">
           <h2 className="text-4xl md:text-6xl mb-8">
-            Let&apos;s Build Something Bold_
+            Let&apos;s Build Something Bold
+            <span className="animate-[color-blink_6s_steps(1)_infinite]">_</span>
           </h2>
           <Button href="/contact" variant="light">Get In Touch</Button>
         </Reveal>

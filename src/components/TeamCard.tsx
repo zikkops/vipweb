@@ -13,7 +13,7 @@ export default function TeamCard({ member }: { member: TeamMember }) {
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 grayscale group-hover:grayscale-0"
         />
       </div>
-      <div className="text-sm tracking-widest text-muted mb-1">{member.role}</div>
+      <div className="text-sm text-muted mb-1">{member.role}</div>
       <h3 className="font-heading text-2xl">{member.name}</h3>
       <p className="text-muted mt-2 text-sm">{member.bio}</p>
     </div>

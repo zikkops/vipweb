@@ -3,34 +3,52 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import PortfolioCard from "./PortfolioCard";
-import { projects, categories } from "@/data/portfolio";
+import { projects, allTags } from "@/data/portfolio";
 
 export default function PortfolioGrid() {
-  const [active, setActive] = useState<string>("All");
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const toggleTag = (tag: string) => {
+    setSelected((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
 
   const filtered =
-    active === "All" ? projects : projects.filter((p) => p.category === active);
+    selected.length === 0
+      ? projects
+      : projects.filter((p) => selected.every((tag) => p.tags.includes(tag)));
 
   return (
     <div>
       <div className="flex flex-wrap gap-3 mb-12">
-        {["All", ...categories].map((cat) => (
+        <button
+          onClick={() => setSelected([])}
+          className={`font-heading text-sm tracking-widest px-4 py-2 border transition-colors ${
+            selected.length === 0
+              ? "bg-ink text-paper border-ink"
+              : "border-hairline text-muted hover:border-ink hover:text-ink"
+          }`}
+        >
+          All
+        </button>
+        {allTags.map((tag) => (
           <button
-            key={cat}
-            onClick={() => setActive(cat)}
+            key={tag}
+            onClick={() => toggleTag(tag)}
             className={`font-heading text-sm tracking-widest px-4 py-2 border transition-colors ${
-              active === cat
+              selected.includes(tag)
                 ? "bg-ink text-paper border-ink"
                 : "border-hairline text-muted hover:border-ink hover:text-ink"
             }`}
           >
-            {cat}
+            {tag}
           </button>
         ))}
       </div>
       <AnimatePresence mode="popLayout">
         <motion.div
-          key={active}
+          key={selected.join(",")}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
           initial="hidden"
           animate="show"

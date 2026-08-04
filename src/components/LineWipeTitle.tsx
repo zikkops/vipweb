@@ -20,32 +20,42 @@ export default function LineWipeTitle({
     if (!el) return;
 
     const measure = () => {
-      const words = text.split(" ");
-      el.textContent = "";
-      const spans = words.map((w) => {
-        const span = document.createElement("span");
-        span.textContent = w + " ";
-        span.style.display = "inline-block";
-        el.appendChild(span);
-        return span;
-      });
+      el.textContent = text;
+      const textNode = el.firstChild;
+      if (!textNode) return;
 
+      const words = text.split(" ");
       const groups: string[][] = [];
       let lastTop: number | null = null;
-      spans.forEach((span, i) => {
-        const top = span.offsetTop;
+      let offset = 0;
+
+      words.forEach((w) => {
+        const start = offset;
+        const end = start + w.length;
+        const range = document.createRange();
+        range.setStart(textNode, start);
+        range.setEnd(textNode, end);
+        const top = range.getBoundingClientRect().top;
+
         if (lastTop === null || Math.abs(top - lastTop) > 2) {
           groups.push([]);
           lastTop = top;
         }
-        groups[groups.length - 1].push(words[i]);
+        groups[groups.length - 1].push(w);
+        offset = end + 1;
       });
+
       setLines(groups.map((g) => g.join(" ")));
     };
 
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
+
+    if (typeof document !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(measure);
+    }
+
     return () => ro.disconnect();
   }, [text]);
 
@@ -53,7 +63,7 @@ export default function LineWipeTitle({
     <div className="relative">
       <div
         ref={measureRef}
-        className={`invisible absolute inset-x-0 top-0 ${textClassName}`}
+        className={`invisible h-0 overflow-hidden ${textClassName}`}
         aria-hidden
       />
       {lines.map((line, i) => (

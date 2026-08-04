@@ -32,7 +32,7 @@ export default function ServicesPage() {
               <p className="text-muted normal-case mb-6">{service.description}</p>
               <ul className="space-y-2">
                 {service.points.map((p) => (
-                  <li key={p} className="text-sm tracking-widest flex items-center gap-2">
+                  <li key={p} className="text-sm flex items-center gap-2">
                     <span className="text-muted">—</span> {p}
                   </li>
                 ))}

@@ -15,26 +15,26 @@ export default function NewsCard({ post }: { post: Post }) {
 
   return (
     <div
-      className="group"
+      className="group flex flex-col min-h-[220px]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="font-heading text-xs tracking-widest text-muted uppercase mb-3">
+      <div className="text-[16px] text-muted mb-3">
         {post.category} — {date}
       </div>
-      <Link href={`/blog/${post.slug}`}>
+      <Link href={`/blog/${post.slug}`} className="block w-full">
         <LineWipeTitle
           text={post.title}
           hovered={hovered}
-          textClassName="font-heading text-xl md:text-2xl leading-snug"
+          textClassName="font-heading font-bold text-[35px] leading-snug"
         />
       </Link>
       <Link
         href={`/blog/${post.slug}`}
-        className="inline-flex items-center font-heading text-sm tracking-widest text-ink hover:text-muted transition-colors mt-4"
+        className="group/read inline-flex items-center font-heading font-bold text-[16px] tracking-widest text-ink mt-4"
       >
         Read More
-        <span className="group-hover:animate-[blink_0.8s_step-end_infinite]">_</span>
+        <span className="group-hover/read:animate-[color-blink_3s_steps(1)_infinite]">_</span>
       </Link>
     </div>
   );

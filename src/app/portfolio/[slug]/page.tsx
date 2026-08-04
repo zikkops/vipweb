@@ -36,8 +36,8 @@ export default async function ProjectPage({
     <>
       <section className="container-page pt-16 pb-12 md:pt-24">
         <Reveal>
-          <div className="font-heading text-sm tracking-[0.3em] text-muted mb-4">
-            {project.category} — {project.year}
+          <div className="text-sm text-muted mb-4">
+            {project.tags.join(" / ")} — {project.year}
           </div>
           <h1 className="text-4xl md:text-6xl max-w-3xl">{project.title}_</h1>
         </Reveal>
@@ -63,15 +63,15 @@ export default async function ProjectPage({
         </Reveal>
         <Reveal delay={0.1} className="space-y-6 block">
           <div>
-            <div className="text-sm tracking-widest text-muted mb-1">Client</div>
+            <div className="text-sm text-muted mb-1">Client</div>
             <div className="font-heading text-lg">{project.client}</div>
           </div>
           <div>
-            <div className="text-sm tracking-widest text-muted mb-1">Year</div>
+            <div className="text-sm text-muted mb-1">Year</div>
             <div className="font-heading text-lg">{project.year}</div>
           </div>
           <div>
-            <div className="text-sm tracking-widest text-muted mb-1">Services</div>
+            <div className="text-sm text-muted mb-1">Services</div>
             <ul>
               {project.services.map((s) => (
                 <li key={s} className="font-heading text-lg">{s}</li>
@@ -96,7 +96,7 @@ export default async function ProjectPage({
           className="container-page py-12 flex items-center justify-between group"
         >
           <div>
-            <div className="text-sm tracking-widest text-muted mb-1">Next Project</div>
+            <div className="text-sm text-muted mb-1">Next Project</div>
             <div className="font-heading text-3xl group-hover:text-muted transition-colors">
               {next.title}
             </div>

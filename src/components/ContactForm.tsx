@@ -27,7 +27,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-sm tracking-widest text-muted block mb-2">Name</label>
+          <label className="text-sm text-muted block mb-2">Name</label>
           <input
             required
             type="text"
@@ -35,7 +35,7 @@ export default function ContactForm() {
           />
         </div>
         <div>
-          <label className="text-sm tracking-widest text-muted block mb-2">Email</label>
+          <label className="text-sm text-muted block mb-2">Email</label>
           <input
             required
             type="email"
@@ -44,14 +44,14 @@ export default function ContactForm() {
         </div>
       </div>
       <div>
-        <label className="text-sm tracking-widest text-muted block mb-2">Subject</label>
+        <label className="text-sm text-muted block mb-2">Subject</label>
         <input
           type="text"
           className="w-full border-b border-hairline bg-transparent py-3 outline-none focus:border-ink transition-colors"
         />
       </div>
       <div>
-        <label className="text-sm tracking-widest text-muted block mb-2">Message</label>
+        <label className="text-sm text-muted block mb-2">Message</label>
         <textarea
           required
           rows={5}

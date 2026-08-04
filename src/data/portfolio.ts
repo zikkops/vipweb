@@ -1,7 +1,7 @@
 export type Project = {
   slug: string;
   title: string;
-  category: string;
+  tags: string[];
   client: string;
   year: string;
   services: string[];
@@ -12,7 +12,7 @@ export type Project = {
   color: string;
 };
 
-export const categories = [
+export const allTags = [
   "Branding",
   "Web Design",
   "Advertising",
@@ -26,7 +26,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/make-things-happen.jpg",
     gallery: ["/images/portfolio/make-things-happen-2.jpg", "/images/portfolio/make-things-happen-3.jpg"],
     title: "Make Things Happen",
-    category: "Branding",
+    tags: ["Branding"],
     client: "Nova Collective",
     year: "2025",
     services: ["Brand Identity", "Guidelines"],
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/life-in-every-stitch.jpg",
     gallery: ["/images/portfolio/life-in-every-stitch-2.jpg", "/images/portfolio/life-in-every-stitch-3.jpg"],
     title: "Life In Every Stitch",
-    category: "Web Design",
+    tags: ["Web Design", "Branding"],
     client: "Fathom Studio",
     year: "2025",
     services: ["Web Design", "Front-end Development"],
@@ -54,7 +54,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/our-passion.jpg",
     gallery: ["/images/portfolio/our-passion-2.jpg", "/images/portfolio/our-passion-3.jpg"],
     title: "Our Passion",
-    category: "Advertising",
+    tags: ["Advertising"],
     client: "Arclight Coffee",
     year: "2024",
     services: ["Campaign Strategy", "Art Direction"],
@@ -68,7 +68,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/your-vision.jpg",
     gallery: ["/images/portfolio/your-vision-2.jpg", "/images/portfolio/your-vision-3.jpg"],
     title: "Your Vision",
-    category: "Branding",
+    tags: ["Branding"],
     client: "Kindred Health",
     year: "2024",
     services: ["Brand Strategy", "Naming", "Identity"],
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/beauty-you-can-afford.jpg",
     gallery: ["/images/portfolio/beauty-you-can-afford-2.jpg", "/images/portfolio/beauty-you-can-afford-3.jpg"],
     title: "Beauty You Can Afford",
-    category: "Advertising",
+    tags: ["Advertising"],
     client: "Lumen Skincare",
     year: "2024",
     services: ["Performance Creative", "Copywriting"],
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/rely-on-experience.jpg",
     gallery: ["/images/portfolio/rely-on-experience-2.jpg", "/images/portfolio/rely-on-experience-3.jpg"],
     title: "Rely On Experience",
-    category: "Motion",
+    tags: ["Motion", "Branding"],
     client: "Fieldstone Capital",
     year: "2023",
     services: ["Brand Film", "Motion Graphics"],
@@ -110,7 +110,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/start-with-trust.jpg",
     gallery: ["/images/portfolio/start-with-trust-2.jpg", "/images/portfolio/start-with-trust-3.jpg"],
     title: "Start With Trust",
-    category: "Web Design",
+    tags: ["Web Design"],
     client: "Harbor Legal",
     year: "2023",
     services: ["Web Design", "Design System"],
@@ -124,7 +124,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/imagine-the-impossible.jpg",
     gallery: ["/images/portfolio/imagine-the-impossible-2.jpg", "/images/portfolio/imagine-the-impossible-3.jpg"],
     title: "Imagine The Impossible",
-    category: "Print",
+    tags: ["Print"],
     client: "Northline Publishing",
     year: "2023",
     services: ["Art Direction", "Print Design"],
@@ -138,7 +138,7 @@ export const projects: Project[] = [
     image: "/images/portfolio/natural-beauty.jpg",
     gallery: ["/images/portfolio/natural-beauty-2.jpg", "/images/portfolio/natural-beauty-3.jpg"],
     title: "Natural Beauty",
-    category: "Branding",
+    tags: ["Branding", "Print"],
     client: "Wren & Co.",
     year: "2022",
     services: ["Brand Identity", "Packaging"],

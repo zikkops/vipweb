@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { PRELOAD_MS } from "@/lib/preload";
 
 export default function Preloader() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const id = setTimeout(() => setLoading(false), 700);
+    const id = setTimeout(() => setLoading(false), PRELOAD_MS);
     return () => clearTimeout(id);
   }, []);
 
@@ -15,20 +16,11 @@ export default function Preloader() {
     <AnimatePresence>
       {loading && (
         <motion.div
-          className="fixed inset-0 z-[100] bg-ink flex items-center justify-center"
+          className="fixed inset-0 z-[100] bg-brand-purple"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-        >
-          <motion.span
-            className="font-heading text-paper text-3xl tracking-widest"
-            initial={{ opacity: 0.3 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
-          >
-            Boldlab_
-          </motion.span>
-        </motion.div>
+        />
       )}
     </AnimatePresence>
   );

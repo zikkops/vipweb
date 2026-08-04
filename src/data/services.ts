@@ -7,10 +7,10 @@ export type Service = {
 };
 
 export const coreServices = [
-  { title: "Design", short: "Identity systems built to last." },
-  { title: "Branding", short: "Positioning, voice, and visual language." },
-  { title: "Advertising", short: "Campaigns that earn attention." },
-  { title: "Copywriting", short: "Words that move people to act." },
+  { title: "Design", short: "Identity systems built to last.", icon: "/images/services/icon-1.svg" },
+  { title: "Branding", short: "Positioning, voice, and visual language.", icon: "/images/services/icon-2.svg" },
+  { title: "Advertising", short: "Campaigns that earn attention.", icon: "/images/services/icon-3.svg" },
+  { title: "Copywriting", short: "Words that move people to act.", icon: "/images/services/icon-4.svg" },
 ];
 
 export const services: Service[] = [

@@ -63,7 +63,7 @@ export default function AboutPage() {
             {awards.map((a) => (
               <RevealItem key={a.title} className="border border-hairline p-6 bg-paper">
                 <h3 className="font-heading text-xl mb-1">{a.title}</h3>
-                <div className="text-sm tracking-widest text-muted mb-3">{a.subtitle}</div>
+                <div className="text-sm text-muted mb-3">{a.subtitle}</div>
                 <p className="text-muted text-sm normal-case">{a.description}</p>
               </RevealItem>
             ))}

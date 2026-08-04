@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { heroSlides } from "@/data/hero";
+import { PRELOAD_MS } from "@/lib/preload";
+import HeroNav from "./HeroNav";
 
 const AUTO_ADVANCE_MS = 6000;
 
@@ -22,40 +24,45 @@ const imageVariants = {
 
 const textGroupVariants = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.08 } },
-  exit: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
-};
-
-const eyebrowVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
-  exit: { opacity: 0, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const } },
+  animate: { transition: { staggerChildren: 0.18 } },
+  exit: { transition: { staggerChildren: 0.1, staggerDirection: -1 } },
 };
 
 const squishVariants = {
   initial: { clipPath: "inset(0 50% 0 50%)" },
   animate: {
     clipPath: "inset(0 0% 0 0%)",
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
   },
   exit: {
     clipPath: "inset(0 50% 0 50%)",
-    transition: { duration: 0.4, ease: [0.55, 0, 0.85, 0.35] as const },
+    transition: { duration: 0.6, ease: [0.55, 0, 0.85, 0.35] as const },
   },
 };
 
 export default function HeroSlider() {
   const [index, setIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   const next = useCallback(() => {
     setIndex((i) => (i + 1) % heroSlides.length);
   }, []);
 
+  const prev = useCallback(() => {
+    setIndex((i) => (i - 1 + heroSlides.length) % heroSlides.length);
+  }, []);
+
   useEffect(() => {
+    const id = setTimeout(() => setRevealed(true), PRELOAD_MS);
+    return () => clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    if (!revealed) return;
     const id = setInterval(next, AUTO_ADVANCE_MS);
     return () => clearInterval(id);
-  }, [next]);
+  }, [next, revealed]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -66,7 +73,9 @@ export default function HeroSlider() {
   const slide = heroSlides[index];
 
   return (
-    <section ref={sectionRef} className="relative -mt-20 h-screen w-full overflow-hidden bg-ink">
+    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-ink">
+      <HeroNav />
+
       {/* Image layer animates independently */}
       <AnimatePresence mode="sync">
         <motion.div
@@ -95,20 +104,14 @@ export default function HeroSlider() {
         <div className="container-page">
           <AnimatePresence mode="wait">
             <motion.div
-              key={slide.eyebrow}
+              key={slide.image}
               variants={textGroupVariants}
               initial="initial"
-              animate="animate"
+              animate={revealed ? "animate" : "initial"}
               exit="exit"
               className="max-w-2xl"
             >
-              <motion.div
-                variants={eyebrowVariants}
-                className="font-heading text-sm tracking-[0.3em] text-paper/70 mb-4"
-              >
-                {slide.eyebrow}
-              </motion.div>
-              <h1 className="flex flex-col items-start gap-[6px] text-5xl md:text-7xl leading-[1.15] mb-8">
+              <h1 className="flex flex-col items-start gap-[6px] text-[95px] leading-[1.15] mb-8">
                 {slide.titleLines.map((line, i) => (
                   <motion.span
                     key={i}
@@ -122,7 +125,7 @@ export default function HeroSlider() {
               <motion.div variants={squishVariants} className="inline-block">
                 <Link
                   href={slide.href}
-                  className="inline-flex items-center gap-2 border border-paper text-paper px-6 py-3 font-heading text-sm tracking-widest hover:bg-paper hover:text-ink transition-colors"
+                  className="inline-flex items-center gap-2 bg-paper text-ink px-6 py-3 font-heading text-[18px] uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
                 >
                   {slide.cta} <span>_</span>
                 </Link>
@@ -132,29 +135,24 @@ export default function HeroSlider() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-0 right-0 z-10">
-        <div className="container-page flex items-center gap-3">
-          {heroSlides.map((s, i) => (
-            <button
-              key={s.image}
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className="relative h-1 flex-1 max-w-16 bg-paper/30 overflow-hidden"
-            >
-              {i === index && (
-                <motion.span
-                  key={`${index}-progress`}
-                  className="absolute inset-y-0 left-0 bg-paper"
-                  initial={{ width: "0%" }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: AUTO_ADVANCE_MS / 1000, ease: "linear" }}
-                />
-              )}
-              {i !== index && <span className="absolute inset-0 bg-paper/30" />}
-            </button>
-          ))}
-        </div>
-      </div>
+      <button
+        onClick={prev}
+        aria-label="Previous slide"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center border border-paper/40 text-paper hover:bg-paper hover:text-ink transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button
+        onClick={next}
+        aria-label="Next slide"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center border border-paper/40 text-paper hover:bg-paper hover:text-ink transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
     </section>
   );
 }

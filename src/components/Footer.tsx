@@ -49,7 +49,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-page py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs tracking-widest text-muted-light">
+        <div className="container-page py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-light">
           <span>© {new Date().getFullYear()} {site.name}. All rights reserved.</span>
           <span>Built with Next.js</span>
         </div>

@@ -11,6 +11,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
+import MainWrapper from "@/components/MainWrapper";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body className="antialiased bg-paper text-ink">
         <Preloader />
         <Header />
-        <main>{children}</main>
+        <MainWrapper>{children}</MainWrapper>
         <Footer />
       </body>
     </html>

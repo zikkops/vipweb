@@ -94,7 +94,7 @@ export default function PortfolioMosaic({ projects }: { projects: Project[] }) {
               variants={labelVariants}
               className="bg-ink text-paper text-base tracking-widest uppercase px-4 py-2 font-heading whitespace-nowrap"
             >
-              {hovered.category}
+              {hovered.tags.join(" / ")}
             </motion.span>
             <motion.span
               variants={labelVariants}

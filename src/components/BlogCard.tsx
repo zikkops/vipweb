@@ -20,7 +20,7 @@ export default function BlogCard({ post }: { post: Post }) {
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
       </div>
-      <div className="text-sm tracking-widest text-muted mb-1">
+      <div className="text-sm text-muted mb-1">
         {post.category} — {date}
       </div>
       <h3 className="font-heading text-2xl mb-2 group-hover:text-muted transition-colors">

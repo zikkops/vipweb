@@ -25,16 +25,16 @@ function Counter({ value }: { value: number }) {
 export default function StatBlock({ label, value }: { label: string; value: number }) {
   return (
     <motion.div
-      className="text-center border border-hairline py-10 px-4"
+      className="text-center py-10 px-4"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="font-heading text-4xl md:text-5xl">
+      <div className="font-heading font-bold text-[75px]">
         <Counter value={value} />+
       </div>
-      <div className="text-sm tracking-widest text-muted mt-2">{label}</div>
+      <div className="text-[19px] text-muted mt-2">{label}</div>
     </motion.div>
   );
 }

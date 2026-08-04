@@ -59,7 +59,7 @@ export default function TeamShowcase({ members }: { members: TeamMember[] }) {
                 {member.name}
               </motion.h3>
               <motion.div
-                className="text-sm tracking-widest text-muted mb-4"
+                className="text-sm text-muted mb-4"
                 initial={{ opacity: 0, x: -40 }}
                 animate={
                   isHovered

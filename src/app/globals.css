@@ -9,6 +9,15 @@
   --color-muted-light: #b3b3b3;
   --color-surface: #f5f5f5;
   --color-hairline: #e6e6e6;
+
+  /* VIPMinds brand palette (style guide) */
+  --color-brand-navy: #2d3b4b;
+  --color-brand-mint: #59f6b5;
+  --color-brand-purple: #a90ad3;
+  --color-brand-blue: #4d89f0;
+  --color-brand-lime: #a6f65f;
+  --color-brand-coral: #ff7860;
+  --color-brand-gray: #f5f5f5;
 }
 
 @theme inline {
@@ -20,6 +29,13 @@
   --color-muted-light: var(--color-muted-light);
   --color-surface: var(--color-surface);
   --color-hairline: var(--color-hairline);
+  --color-brand-navy: var(--color-brand-navy);
+  --color-brand-mint: var(--color-brand-mint);
+  --color-brand-purple: var(--color-brand-purple);
+  --color-brand-blue: var(--color-brand-blue);
+  --color-brand-lime: var(--color-brand-lime);
+  --color-brand-coral: var(--color-brand-coral);
+  --color-brand-gray: var(--color-brand-gray);
   --font-heading: "Barlow Condensed";
   --font-body: "Hind";
 }
@@ -43,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .container-page {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1130px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1.5rem;
@@ -60,5 +76,54 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes blink {
   50% {
     opacity: 0;
+  }
+}
+
+@keyframes color-blink {
+  0% {
+    color: var(--color-brand-mint);
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  16.667% {
+    color: var(--color-brand-purple);
+    opacity: 1;
+  }
+  26.667% {
+    opacity: 0;
+  }
+  33.333% {
+    color: var(--color-brand-blue);
+    opacity: 1;
+  }
+  43.333% {
+    opacity: 0;
+  }
+  50% {
+    color: var(--color-brand-lime);
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+  66.667% {
+    color: var(--color-brand-coral);
+    opacity: 1;
+  }
+  76.667% {
+    opacity: 0;
+  }
+  83.333% {
+    color: var(--color-ink);
+    opacity: 1;
+  }
+  93.333% {
+    opacity: 0;
+  }
+  100% {
+    color: var(--color-brand-mint);
+    opacity: 1;
   }
 }

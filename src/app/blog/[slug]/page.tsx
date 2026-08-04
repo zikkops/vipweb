@@ -39,11 +39,11 @@ export default async function PostPage({
     <>
       <section className="container-page pt-16 pb-8 md:pt-24">
         <Reveal>
-          <div className="font-heading text-sm tracking-widest text-muted mb-4">
+          <div className="text-sm text-muted mb-4">
             {post.category}
           </div>
           <h1 className="text-4xl md:text-6xl max-w-3xl mb-6">{post.title}</h1>
-          <div className="text-sm tracking-widest text-muted">
+          <div className="text-sm text-muted">
             By {post.author} — {date}
           </div>
         </Reveal>
@@ -76,7 +76,7 @@ export default async function PostPage({
           className="container-page py-12 flex items-center justify-between group"
         >
           <div>
-            <div className="text-sm tracking-widest text-muted mb-1">Next Post</div>
+            <div className="text-sm text-muted mb-1">Next Post</div>
             <div className="font-heading text-3xl group-hover:text-muted transition-colors">
               {next.title}
             </div>
