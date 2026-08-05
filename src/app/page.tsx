@@ -1,9 +1,5 @@
-import Link from "next/link";
-import Image from "next/image";
-import Button from "@/components/Button";
 import SectionHeading from "@/components/SectionHeading";
 import PortfolioMosaic from "@/components/PortfolioMosaic";
-import BlogCard from "@/components/BlogCard";
 import NewsCard from "@/components/NewsCard";
 import AwardCard from "@/components/AwardCard";
 import RotatingIcon from "@/components/RotatingIcon";
@@ -12,7 +8,12 @@ import CreativeGrid from "@/components/CreativeGrid";
 import ClientsLogoGrid from "@/components/ClientsLogoGrid";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import StatBlock from "@/components/StatBlock";
+import AutoplayVideo from "@/components/AutoplayVideo";
 import Accordion from "@/components/Accordion";
+import PhoneMockup from "@/components/PhoneMockup";
+import Newsletter from "@/components/Newsletter";
+import OurWorkGrid from "@/components/OurWorkGrid";
+import HomeContact from "@/components/HomeContact";
 import HeroSlider from "@/components/HeroSlider";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 import { coreServices } from "@/data/services";
@@ -95,11 +96,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Showcase video */}
+      <section className="h-[75vh] w-full overflow-hidden">
+        <AutoplayVideo src="/videos/generic-showcase.mp4" />
+      </section>
+
       {/* Clients */}
-      <section className="bg-surface py-16">
+      <section className="bg-paper py-16">
         <div className="container-page">
           <Reveal>
-            <SectionHeading title="Our Clients" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
+            <SectionHeading title="Our Clients" titleClassName="text-[70px]" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
           </Reveal>
           <Reveal delay={0.1} className="mt-12">
             <ClientsLogoGrid clients={clients} />
@@ -107,109 +113,82 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Way we work */}
+      <section className="bg-surface py-20 md:py-28">
+        <div className="container-page grid grid-cols-1 md:grid-cols-2 gap-[100px] items-start">
+          <Reveal className="md:h-[420px] flex items-center justify-center">
+            <PhoneMockup src="/images/misc/phone-showcase.jpg" />
+          </Reveal>
+          <Reveal delay={0.15}>
+            <Accordion items={workAccordion} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <Newsletter />
+
+      {/* Team */}
+      <section className="border-t border-hairline">
+        <Reveal delay={0.1}>
+          <TeamShowcase members={team.slice(0, 4)} />
+        </Reveal>
+      </section>
+
+      {/* Our Work */}
+      <OurWorkGrid />
+
       {/* Creative grid */}
       <Reveal>
         <CreativeGrid />
       </Reveal>
 
-      {/* Way we work */}
-      <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        <Reveal>
-          <div>
-            <SectionHeading eyebrow="Process" title="The Way We Work" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
-            <p className="text-muted mt-6 max-w-md normal-case">
-              No account layers, no scope surprises. Every engagement runs with
-              a small, senior team from kickoff to launch.
-            </p>
-          </div>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <Accordion items={workAccordion} />
-        </Reveal>
+      {/* Testimonials */}
+      <section className="bg-ink text-paper py-20 md:py-28">
+        <div className="container-page">
+          <Reveal>
+            <TestimonialsCarousel items={testimonials} />
+          </Reveal>
+        </div>
       </section>
 
       {/* Awards */}
-      <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-12 items-start border-t border-hairline">
+      <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-3 gap-12 items-start border-t border-hairline">
         <Reveal>
-          <div>
-            <SectionHeading eyebrow="Recognition" title="Awards" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
-            <p className="text-muted mt-6 max-w-md normal-case">
-              A few of the honors our work has picked up along the way.
-            </p>
+          <SectionHeading
+            title="Awards"
+            titleClassName="text-[70px]"
+            underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
+          />
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="flex flex-col gap-10">
+            {awards.slice(0, 3).map((award) => (
+              <AwardCard key={award.title} award={award} />
+            ))}
           </div>
         </Reveal>
-        <Reveal delay={0.15}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
-            {awards.map((award) => (
+        <Reveal delay={0.2}>
+          <div className="flex flex-col gap-10">
+            {awards.slice(3, 6).map((award) => (
               <AwardCard key={award.title} award={award} />
             ))}
           </div>
         </Reveal>
       </section>
 
-      {/* Team */}
-      <section className="py-20 md:py-28 border-t border-hairline">
-        <Reveal className="container-page">
-          <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
-            <SectionHeading eyebrow="The People" title="Meet The Team" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
-            <Link href="/team" className="font-heading text-sm tracking-widest hover:text-muted transition-colors">
-              View Full Team _
-            </Link>
-          </div>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <TeamShowcase members={team.slice(0, 4)} />
-        </Reveal>
-      </section>
+      {/* Contact */}
+      <HomeContact />
 
-      {/* Testimonials */}
-      <section className="bg-ink text-paper py-20 md:py-28">
-        <div className="container-page">
-          <Reveal>
-            <SectionHeading eyebrow="Testimonials" title="What Clients Say" align="center" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
-          </Reveal>
-          <div className="mt-12">
-            <TestimonialsCarousel items={testimonials} />
-          </div>
-        </div>
-      </section>
-
-      {/* Blog teaser */}
-      <section className="container-page py-20 md:py-28">
-        <Reveal>
-          <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
-            <SectionHeading eyebrow="Journal" title="From The Blog" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
-            <Link href="/blog" className="font-heading text-sm tracking-widest hover:text-muted transition-colors">
-              View All Posts _
-            </Link>
-          </div>
-        </Reveal>
-        <RevealGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {posts.slice(0, 3).map((post) => (
-            <RevealItem key={post.slug}>
-              <BlogCard post={post} />
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </section>
-
-      {/* CTA */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
-        <Image
-          src="/images/misc/cta.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
+      {/* Map */}
+      <section className="h-[60vh] w-full">
+        <iframe
+          src="https://maps.google.com/maps?q=3%20Wakehurst%20Street%2C%20New%20York%2C%20NY%2010002&output=embed"
+          className="w-full h-full border-0"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Our location"
         />
-        <div className="absolute inset-0 bg-ink/50" />
-        <Reveal className="relative container-page text-paper text-center w-full">
-          <h2 className="text-4xl md:text-6xl mb-8">
-            Let&apos;s Build Something Bold
-            <span className="animate-[color-blink_6s_steps(1)_infinite]">_</span>
-          </h2>
-          <Button href="/contact" variant="light">Get In Touch</Button>
-        </Reveal>
       </section>
     </>
   );

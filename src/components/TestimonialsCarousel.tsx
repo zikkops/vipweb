@@ -29,8 +29,13 @@ export default function TestimonialsCarousel({
   const current = items[index];
 
   return (
-    <div className="relative max-w-3xl mx-auto text-center">
-      <div className="min-h-[220px] flex items-center justify-center overflow-hidden">
+    <div className="relative max-w-3xl">
+      <div className="absolute right-0 top-0 flex gap-3 opacity-20 pointer-events-none select-none" aria-hidden>
+        <span className="w-8 md:w-10 h-24 md:h-28 bg-paper -skew-x-[20deg]" />
+        <span className="w-8 md:w-10 h-24 md:h-28 bg-paper -skew-x-[20deg]" />
+      </div>
+
+      <div className="relative min-h-[220px] flex flex-col justify-center overflow-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={index}
@@ -40,16 +45,16 @@ export default function TestimonialsCarousel({
             exit={{ opacity: 0, x: -direction * 40 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="font-heading text-2xl md:text-3xl leading-snug mb-6">
+            <p className="font-heading font-semibold uppercase text-[26px] leading-snug mb-6 max-w-xl">
               &ldquo;{current.quote}&rdquo;
             </p>
-            <div className="font-heading tracking-widest text-sm">{current.name}</div>
-            <div className="text-muted-light text-sm">{current.role}</div>
+            <div className="text-paper/80 normal-case">- {current.name} -</div>
+            <div className="text-muted-light text-sm normal-case">{current.role}</div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="flex items-center justify-center gap-3 mt-6">
+      <div className="flex items-center gap-2 mt-8">
         {items.map((t, i) => (
           <button
             key={t.name}
@@ -58,8 +63,8 @@ export default function TestimonialsCarousel({
               setDirection(i > index ? 1 : -1);
               setIndex(i);
             }}
-            className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-8 bg-paper" : "w-1.5 bg-paper/30"
+            className={`h-[3px] transition-all ${
+              i === index ? "w-10 bg-paper" : "w-6 bg-paper/30"
             }`}
           />
         ))}

@@ -31,7 +31,7 @@ export default function StatBlock({ label, value }: { label: string; value: numb
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="font-heading font-bold text-[75px]">
+      <div className="font-heading font-semibold text-[75px]">
         <Counter value={value} />+
       </div>
       <div className="text-[19px] text-muted mt-2">{label}</div>

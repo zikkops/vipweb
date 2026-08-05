@@ -26,12 +26,12 @@ export default function NewsCard({ post }: { post: Post }) {
         <LineWipeTitle
           text={post.title}
           hovered={hovered}
-          textClassName="font-heading font-bold text-[35px] leading-snug"
+          textClassName="font-heading font-semibold text-[35px] leading-snug"
         />
       </Link>
       <Link
         href={`/blog/${post.slug}`}
-        className="group/read inline-flex items-center font-heading font-bold text-[16px] tracking-widest text-ink mt-4"
+        className="group/read inline-flex items-center font-heading font-semibold text-[16px] uppercase tracking-widest text-ink mt-4"
       >
         Read More
         <span className="group-hover/read:animate-[color-blink_3s_steps(1)_infinite]">_</span>

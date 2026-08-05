@@ -46,9 +46,19 @@ export default function MenuDrawer({ open, onClose }: { open: boolean; onClose: 
             exit={{ x: "100%" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
+            <button
+              onClick={onClose}
+              aria-label="Close menu"
+              className="absolute top-6 right-6 md:right-10 text-paper hover:text-muted-light transition-colors"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+
             <Image src="/images/logo-mark.svg" alt="" width={64} height={64} className="w-16 h-16" />
 
-            <div className="bg-paper text-ink font-heading text-3xl font-bold uppercase tracking-tight px-4 py-2">
+            <div className="bg-paper text-ink font-heading text-3xl font-semibold uppercase tracking-tight px-4 py-2">
               {site.name}
             </div>
 

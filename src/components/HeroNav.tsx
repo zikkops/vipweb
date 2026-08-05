@@ -2,19 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { nav, site } from "@/data/site";
 import MenuTrigger from "./MenuTrigger";
 import MenuDrawer from "./MenuDrawer";
 
 export default function HeroNav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="absolute inset-x-0 top-0 z-20">
-      <div className="container-page flex items-center justify-between h-20">
+      <div className="w-full px-10 flex items-center justify-between h-20">
         <Link
           href="/"
-          className="font-heading text-3xl md:text-4xl font-bold uppercase tracking-tight text-paper"
+          className="font-heading text-3xl md:text-4xl font-semibold uppercase tracking-tight text-paper"
         >
           {site.name}<span className="text-paper/70">_</span>
         </Link>
@@ -24,9 +26,14 @@ export default function HeroNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-heading text-sm tracking-widest text-paper hover:text-paper/70 transition-colors"
+              className="group relative font-heading font-medium uppercase text-[19px] tracking-widest pb-1 text-paper"
             >
               {item.label}
+              <span
+                className={`absolute left-0 bottom-0 h-[4px] w-full bg-paper origin-left transition-transform duration-300 ease-out ${
+                  pathname === item.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
             </Link>
           ))}
         </nav>

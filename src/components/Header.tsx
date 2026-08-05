@@ -39,10 +39,10 @@ export default function Header() {
             exit={{ y: "-100%" }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="container-page flex items-center justify-between h-20">
+            <div className="w-full px-10 flex items-center justify-between h-20">
               <Link
                 href="/"
-                className="font-heading text-3xl md:text-4xl font-bold uppercase tracking-tight text-ink"
+                className="font-heading text-3xl md:text-4xl font-semibold uppercase tracking-tight text-ink"
               >
                 {site.name}<span className="text-muted">_</span>
               </Link>
@@ -52,9 +52,14 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="font-heading text-sm tracking-widest text-ink hover:text-muted transition-colors"
+                    className="group relative font-heading font-medium uppercase text-[19px] tracking-widest pb-1 text-ink"
                   >
                     {item.label}
+                    <span
+                      className={`absolute left-0 bottom-0 h-[4px] w-full bg-ink origin-left transition-transform duration-300 ease-out ${
+                        pathname === item.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      }`}
+                    />
                   </Link>
                 ))}
               </nav>

@@ -48,7 +48,7 @@ export default function CreativeGrid() {
     <div className="grid grid-cols-1 sm:grid-cols-3">
       {panels.map((panel, i) =>
         panel.type === "image" ? (
-          <div key={i} className="group relative h-[320px] sm:h-[420px] overflow-hidden bg-ink">
+          <div key={i} className="group relative h-[65vh] overflow-hidden bg-ink">
             <Image
               src={panel.src}
               alt=""
@@ -60,26 +60,32 @@ export default function CreativeGrid() {
         ) : (
           <div
             key={i}
-            className="relative h-[320px] sm:h-[420px] overflow-hidden bg-surface flex items-center px-8 md:px-10"
+            className="relative h-[65vh] overflow-hidden bg-surface flex items-center p-[105px]"
           >
             <span
               aria-hidden
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[20rem] leading-none text-hairline select-none pointer-events-none"
+              className={`absolute font-heading font-semibold text-[24rem] leading-none text-hairline select-none pointer-events-none ${
+                panel.letter === "B"
+                  ? "left-1/2 bottom-0 -translate-x-1/2 translate-y-1/4"
+                  : panel.letter === "C"
+                  ? "right-0 top-0 translate-x-1/4 -translate-y-1/4"
+                  : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              }`}
             >
               {panel.letter}
             </span>
             <div className="relative z-10">
-              <h3 className="font-heading text-2xl leading-tight mb-4">
+              <h3 className="font-heading font-[600]! text-[35px] leading-tight mb-4">
                 {panel.heading.map((line) => (
                   <span key={line} className="block">
                     {line}
                   </span>
                 ))}
               </h3>
-              <p className="text-muted text-sm max-w-xs mb-6 normal-case">{panel.body}</p>
+              <p className="text-muted text-[16px] max-w-xs mb-6 normal-case">{panel.body}</p>
               <Link
                 href={panel.href}
-                className="font-heading text-sm tracking-widest hover:text-muted transition-colors"
+                className="font-heading text-sm uppercase tracking-widest hover:text-muted transition-colors"
               >
                 Read More _
               </Link>
