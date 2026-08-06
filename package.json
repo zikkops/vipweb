@@ -13,6 +13,7 @@
     "@fontsource/hind": "^5.3.0",
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
     "framer-motion": "^12.42.2",
     "next": "16.2.12",

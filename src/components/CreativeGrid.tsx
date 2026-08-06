@@ -64,13 +64,7 @@ export default function CreativeGrid() {
           >
             <span
               aria-hidden
-              className={`absolute font-heading font-semibold text-[24rem] leading-none text-hairline select-none pointer-events-none ${
-                panel.letter === "B"
-                  ? "left-1/2 bottom-0 -translate-x-1/2 translate-y-1/4"
-                  : panel.letter === "C"
-                  ? "right-0 top-0 translate-x-1/4 -translate-y-1/4"
-                  : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              }`}
+              className="absolute left-1/2 top-[calc(50%-50px)] -translate-x-1/2 -translate-y-1/2 font-heading font-semibold text-[24rem] leading-none text-hairline select-none pointer-events-none"
             >
               {panel.letter}
             </span>

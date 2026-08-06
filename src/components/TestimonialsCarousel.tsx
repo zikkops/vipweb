@@ -24,7 +24,7 @@ export default function TestimonialsCarousel({
   useEffect(() => {
     const id = setInterval(() => go(1), 6000);
     return () => clearInterval(id);
-  }, [go]);
+  }, [go, index]);
 
   const current = items[index];
 

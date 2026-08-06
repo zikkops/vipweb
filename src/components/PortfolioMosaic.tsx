@@ -20,8 +20,8 @@ const spans = [
 
 const groupVariants = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.08 } },
-  exit: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
+  animate: { transition: { staggerChildren: 0.18 } },
+  exit: { transition: { duration: 0 } },
 };
 
 const labelVariants = {
@@ -29,12 +29,12 @@ const labelVariants = {
   animate: {
     clipPath: "inset(0 0% 0 0)",
     opacity: 1,
-    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
   exit: {
     clipPath: "inset(0 100% 0 0)",
     opacity: 0,
-    transition: { duration: 0.25, ease: [0.55, 0, 0.85, 0.35] as const },
+    transition: { duration: 0 },
   },
 };
 
@@ -92,13 +92,13 @@ export default function PortfolioMosaic({ projects }: { projects: Project[] }) {
           >
             <motion.span
               variants={labelVariants}
-              className="bg-ink text-paper text-base tracking-widest uppercase px-4 py-2 font-heading whitespace-nowrap"
+              className="bg-ink text-paper text-base leading-none tracking-widest uppercase p-[5px] font-heading whitespace-nowrap"
             >
               {hovered.tags.join(" / ")}
             </motion.span>
             <motion.span
               variants={labelVariants}
-              className="bg-ink text-paper text-3xl tracking-wide px-5 py-3 font-heading whitespace-nowrap"
+              className="bg-ink text-paper text-3xl leading-none tracking-wide uppercase p-[5px] font-heading whitespace-nowrap"
             >
               {hovered.title}
             </motion.span>

@@ -14,7 +14,7 @@ export default function HomeContact() {
   return (
     <section className="max-w-[1100px] mx-auto py-20 md:py-28 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16">
       <div>
-        <h2 className="text-[38px] leading-tight mb-8 whitespace-nowrap">
+        <h2 className="text-[55px] leading-tight mb-8">
           Don&apos;t Be Shy, Say Hello!
         </h2>
 
@@ -49,7 +49,7 @@ export default function HomeContact() {
             />
             <button
               type="submit"
-              className="group/send inline-flex items-center border border-ink px-8 py-3 font-heading font-semibold text-sm uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
+              className="group/send inline-flex items-center border border-ink px-8 py-3 font-heading font-semibold text-[18px] uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
             >
               Send
               <span className="group-hover/send:animate-[color-blink_3s_steps(1)_infinite]">_</span>

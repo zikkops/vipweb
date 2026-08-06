@@ -153,7 +153,8 @@ export default function Home() {
       </section>
 
       {/* Awards */}
-      <section className="container-page py-20 md:py-28 grid grid-cols-1 md:grid-cols-3 gap-12 items-start border-t border-hairline">
+      <section className="bg-surface py-20 md:py-28 border-t border-hairline">
+        <div className="container-page grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         <Reveal>
           <SectionHeading
             title="Awards"
@@ -175,6 +176,7 @@ export default function Home() {
             ))}
           </div>
         </Reveal>
+        </div>
       </section>
 
       {/* Contact */}

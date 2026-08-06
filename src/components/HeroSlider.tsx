@@ -62,7 +62,7 @@ export default function HeroSlider() {
     if (!revealed) return;
     const id = setInterval(next, AUTO_ADVANCE_MS);
     return () => clearInterval(id);
-  }, [next, revealed]);
+  }, [next, revealed, index]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
