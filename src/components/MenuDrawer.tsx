@@ -3,18 +3,8 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faXTwitter, faBehance, faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import Link from "next/link";
 import { nav, site } from "@/data/site";
-
-const socialIcons: Record<string, IconDefinition> = {
-  Instagram: faInstagram,
-  Twitter: faXTwitter,
-  Behance: faBehance,
-  Facebook: faFacebookF,
-};
 
 export default function MenuDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
@@ -80,19 +70,6 @@ export default function MenuDrawer({ open, onClose }: { open: boolean; onClose: 
             </nav>
 
             <p className="text-paper/60 text-sm max-w-xs normal-case">{site.tagline}</p>
-
-            <div className="flex items-center gap-5">
-              {site.socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  aria-label={s.label}
-                  className="text-paper hover:text-muted-light transition-colors"
-                >
-                  <FontAwesomeIcon icon={socialIcons[s.label]} className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
           </motion.div>
         </>
       )}
