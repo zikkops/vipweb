@@ -207,12 +207,6 @@ export const clients: Client[] = [
     height: 113,
   },
   {
-    name: "DANDS Dips and Sticks",
-    logo: "/images/clients/dands.webp",
-    width: 216,
-    height: 128,
-  },
-  {
     name: "TAJ",
     logo: "/images/clients/taj.webp",
     width: 156,
