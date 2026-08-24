@@ -35,7 +35,7 @@ export default function OurWorkGrid() {
         <Reveal>
           <SectionHeading
             title="Our Work"
-            titleClassName="text-[70px] font-normal whitespace-nowrap"
+            titleClassName="text-[44px] sm:text-[56px] lg:text-[70px] font-normal whitespace-nowrap"
             underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
           />
         </Reveal>
@@ -45,7 +45,7 @@ export default function OurWorkGrid() {
             <RevealItem key={item.number} className="relative">
               <span
                 aria-hidden
-                className="absolute top-[69px] left-[-14px] font-heading font-bold text-[250px] leading-[25px] text-hairline select-none pointer-events-none"
+                className="absolute top-[52px] lg:top-[69px] left-0 lg:left-[-14px] font-heading font-bold text-[150px] lg:text-[250px] leading-[25px] text-hairline select-none pointer-events-none"
               >
                 {item.number}
               </span>

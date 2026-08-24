@@ -91,7 +91,7 @@ export default function HeroSlider() {
               exit="exit"
               className="max-w-2xl"
             >
-              <h1 className="flex flex-col items-start gap-[6px] text-[95px] leading-[90px] mb-8">
+              <h1 className="flex flex-col items-start gap-[6px] text-[40px] leading-[38px] sm:text-[62px] sm:leading-[60px] lg:text-[95px] lg:leading-[90px] mb-8">
                 {slide.titleLines.map((line, i) => (
                   <motion.span
                     key={i}
@@ -105,7 +105,7 @@ export default function HeroSlider() {
               <motion.div variants={squishVariants} className="inline-block">
                 <Link
                   href={slide.href}
-                  className="inline-flex items-center gap-2 bg-paper text-ink px-6 py-3 font-heading text-[18px] uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
+                  className="inline-flex items-center gap-2 bg-paper text-ink px-5 py-2.5 md:px-6 md:py-3 font-heading text-[15px] md:text-[18px] uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
                 >
                   {slide.cta} <span>_</span>
                 </Link>

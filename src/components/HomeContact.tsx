@@ -12,9 +12,9 @@ export default function HomeContact() {
   }
 
   return (
-    <section id="contact" className="max-w-[1100px] mx-auto py-20 md:py-28 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16 scroll-mt-20">
+    <section id="contact" className="max-w-[1100px] mx-auto px-6 md:px-10 py-20 md:py-28 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 md:gap-16 scroll-mt-20">
       <div>
-        <h2 className="text-[55px] leading-tight mb-8">
+        <h2 className="text-[34px] sm:text-[44px] md:text-[55px] leading-tight mb-8">
           Don&apos;t Be Shy, Say Hello!
         </h2>
 
@@ -58,7 +58,7 @@ export default function HomeContact() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
         {site.addresses.map((a) => (
           <div key={a.label}>
             <h4 className="font-heading text-[26px] mb-2">{a.label}</h4>

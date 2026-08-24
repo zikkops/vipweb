@@ -48,7 +48,7 @@ export default function Home() {
       <section className="bg-paper py-16">
         <div className="container-page">
           <Reveal>
-            <SectionHeading title="Our Clients" titleClassName="text-[70px]" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
+            <SectionHeading title="Our Clients" titleClassName="text-[44px] sm:text-[56px] lg:text-[70px]" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
           </Reveal>
           <Reveal delay={0.1} className="mt-12">
             <ClientsLogoGrid clients={clients} />

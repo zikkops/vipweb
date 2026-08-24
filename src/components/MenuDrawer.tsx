@@ -6,7 +6,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faXTwitter, faBehance, faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { site } from "@/data/site";
+import Link from "next/link";
+import { nav, site } from "@/data/site";
 
 const socialIcons: Record<string, IconDefinition> = {
   Instagram: faInstagram,
@@ -64,6 +65,19 @@ export default function MenuDrawer({ open, onClose }: { open: boolean; onClose: 
               sizes="260px"
               className="h-12 w-auto"
             />
+
+            <nav className="flex flex-col items-center gap-5">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className="font-heading font-semibold uppercase text-[28px] tracking-widest text-paper hover:text-muted-light transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
             <p className="text-paper/60 text-sm max-w-xs normal-case">{site.tagline}</p>
 

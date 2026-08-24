@@ -52,7 +52,7 @@ export default function CreativeGrid() {
     <div className="grid grid-cols-1 sm:grid-cols-3">
       {panels.map((panel, i) =>
         panel.type === "image" ? (
-          <div key={i} className="group relative h-[65vh] overflow-hidden bg-ink">
+          <div key={i} className="group relative h-[45vh] sm:h-[65vh] overflow-hidden bg-ink">
             <Image
               src={panel.src}
               alt=""
@@ -64,16 +64,16 @@ export default function CreativeGrid() {
         ) : (
           <div
             key={i}
-            className="relative h-[65vh] overflow-hidden bg-surface flex items-center p-[105px]"
+            className="relative h-[45vh] sm:h-[65vh] overflow-hidden bg-surface flex items-center px-8 py-12 sm:px-12 lg:p-[105px]"
           >
             <span
               aria-hidden
-              className="absolute left-1/2 top-[calc(50%-50px)] -translate-x-1/2 -translate-y-1/2 font-heading font-semibold text-[24rem] leading-none text-hairline select-none pointer-events-none"
+              className="absolute left-1/2 top-[calc(50%-50px)] -translate-x-1/2 -translate-y-1/2 font-heading font-semibold text-[12rem] sm:text-[18rem] lg:text-[24rem] leading-none text-hairline select-none pointer-events-none"
             >
               {panel.letter}
             </span>
             <div className="relative z-10">
-              <h3 className="font-heading font-[600]! text-[35px] leading-tight mb-4">
+              <h3 className="font-heading font-[600]! text-[26px] sm:text-[30px] lg:text-[35px] leading-tight mb-4">
                 {panel.heading.map((line) => (
                   <span key={line} className="block">
                     {line}

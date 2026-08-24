@@ -4,7 +4,7 @@ export default function Newsletter() {
   return (
     <section className="bg-ink text-paper py-20 md:py-28">
       <div className="container-page">
-        <h2 className="text-[70px] leading-none mb-8">
+        <h2 className="text-[44px] sm:text-[56px] lg:text-[70px] leading-none mb-8">
           Newsletter<span className="animate-[color-blink_6s_steps(1)_infinite]">_</span>
         </h2>
 
