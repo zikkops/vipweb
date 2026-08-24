@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SectionHeading from "@/components/SectionHeading";
 import AboutIntro from "@/components/AboutIntro";
 import CapabilitiesGrid from "@/components/CapabilitiesGrid";
@@ -7,7 +8,6 @@ import ClientsLogoGrid from "@/components/ClientsLogoGrid";
 import StatBlock from "@/components/StatBlock";
 import AutoplayVideo from "@/components/AutoplayVideo";
 import Accordion from "@/components/Accordion";
-import PhoneMockup from "@/components/PhoneMockup";
 import Newsletter from "@/components/Newsletter";
 import OurWorkGrid from "@/components/OurWorkGrid";
 import HomeContact from "@/components/HomeContact";
@@ -76,8 +76,14 @@ export default function Home() {
       {/* Way we work */}
       <section className="bg-surface py-20 md:py-28">
         <div className="container-page grid grid-cols-1 md:grid-cols-2 gap-[100px] items-start">
-          <Reveal className="md:h-[420px] flex items-center justify-center">
-            <PhoneMockup src="/images/misc/phone-showcase.jpg" />
+          <Reveal className="relative md:h-[420px] aspect-[16/9] md:aspect-auto overflow-hidden block">
+            <Image
+              src="/images/misc/how-we-work.webp"
+              alt=""
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+            />
           </Reveal>
           <Reveal delay={0.15}>
             <Accordion items={workAccordion} />
