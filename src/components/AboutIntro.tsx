@@ -10,8 +10,9 @@ export default function AboutIntro() {
         </p>
 
         <h2 className="text-[32px] md:text-[46px] leading-[1.08] mb-8 max-w-4xl">
-          {site.name} Is An American Lebanese Agency With Roots In Beirut And Boots On The Ground In
-          Beverly Hills &amp; Las Vegas.
+          {site.name}{" "}
+          Is An American Lebanese Agency With Roots In Beirut And Boots On The Ground In Beverly
+          Hills &amp; Las Vegas.
         </h2>
 
         <div className="max-w-2xl space-y-5 text-muted text-[17px] normal-case leading-relaxed">

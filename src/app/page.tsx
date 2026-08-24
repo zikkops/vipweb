@@ -30,6 +30,15 @@ export default function Home() {
 
       {/* Portfolio teaser */}
       <section id="portfolio" className="pb-20 md:pb-28 scroll-mt-20">
+        <div className="container-page pb-10 md:pb-14">
+          <Reveal>
+            <SectionHeading
+              title="A Glimpse Into Our Portfolio"
+              titleClassName="text-[34px] sm:text-[46px] lg:text-[60px] leading-[1.06]"
+              underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
+            />
+          </Reveal>
+        </div>
         <Reveal delay={0.1}>
           <PortfolioMosaic items={featuredWork} />
         </Reveal>

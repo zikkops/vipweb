@@ -20,11 +20,11 @@ export default function CapabilitiesGrid() {
           </p>
         </Reveal>
 
-        <RevealGroup className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <RevealGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {capabilities.map((c) => (
             <RevealItem key={c.number} className="h-full">
               <div className="group flex h-full items-center gap-4 bg-surface p-5 transition-colors duration-300 hover:bg-hairline">
-                <div className="shrink-0 w-[72px] md:w-[84px]">
+                <div className="shrink-0 w-[64px] sm:w-[72px] md:w-[84px]">
                   <Image
                     src={c.icon}
                     alt=""
@@ -34,7 +34,7 @@ export default function CapabilitiesGrid() {
                     className="w-full h-auto"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <span className="block font-heading text-[13px] tracking-[0.2em] text-accent mb-1">
                     {c.number}
                   </span>

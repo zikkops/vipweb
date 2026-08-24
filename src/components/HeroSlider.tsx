@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { heroSlides } from "@/data/hero";
@@ -63,18 +64,15 @@ export default function HeroSlider() {
     <section id="home" ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-black">
       <HeroNav />
 
-      {/* Looping wave background, shared by every slide */}
+      {/* Still background, shared by every slide */}
       <motion.div className="absolute inset-0" style={{ y, scale: 2 }}>
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/videos/hero-wave.mp4"
-          poster="/images/hero/hero-wave-poster.webp"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden
+        <Image
+          src={slide.image}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-ink/30" />
       </motion.div>
