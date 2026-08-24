@@ -4,7 +4,7 @@ import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
 export const metadata = {
-  title: "Contact Us — Boldlab",
+  title: "Contact Us — VIPMINDS",
 };
 
 export default function ContactPage() {
@@ -26,7 +26,7 @@ export default function ContactPage() {
           <div className="relative aspect-[21/9] overflow-hidden">
             <Image
               src="/images/misc/contact.jpg"
-              alt="Boldlab office"
+              alt="VIPMINDS office"
               fill
               sizes="100vw"
               className="object-cover"
@@ -47,16 +47,16 @@ export default function ContactPage() {
               {site.email}
             </a>
           </div>
-          <div>
-            <h3 className="text-sm tracking-widest text-muted mb-2">Call Us</h3>
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-heading text-xl">
-              {site.phone}
-            </a>
-          </div>
           {site.addresses.map((a) => (
             <div key={a.label}>
               <h3 className="text-sm tracking-widest text-muted mb-2">{a.label}</h3>
-              <p className="font-heading text-xl">{a.line}</p>
+              <p className="font-heading text-xl mb-2">{a.line}</p>
+              <a
+                href={`tel:${a.phone.replace(/[\s-]/g, "")}`}
+                className="font-heading text-xl hover:text-muted transition-colors"
+              >
+                {a.phone}
+              </a>
             </div>
           ))}
         </Reveal>

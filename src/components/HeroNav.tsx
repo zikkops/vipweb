@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { nav, site } from "@/data/site";
@@ -14,11 +15,16 @@ export default function HeroNav() {
   return (
     <div className="absolute inset-x-0 top-0 z-20">
       <div className="w-full px-10 flex items-center justify-between h-20">
-        <Link
-          href="/"
-          className="font-heading text-3xl md:text-4xl font-semibold uppercase tracking-tight text-paper"
-        >
-          {site.name}<span className="text-paper/70">_</span>
+        <Link href="/" className="block">
+          <Image
+            src="/images/logo-light.webp"
+            alt={site.name}
+            width={797}
+            height={214}
+            priority
+            sizes="200px"
+            className="h-9 md:h-10 w-auto"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faXTwitter, faBehance, faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import { faLocationDot, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { site } from "@/data/site";
 import { posts } from "@/data/blog";
@@ -32,16 +32,29 @@ export default function Footer() {
         <div>
           <h4 className="text-[26px] mb-6">About Us</h4>
           <p className="text-paper normal-case mb-6 max-w-xs">{site.description}</p>
-          <div className="space-y-2 text-muted-light normal-case mb-6">
-            {site.addresses[0] && (
-              <div className="flex items-center gap-3">
-                <FontAwesomeIcon icon={faLocationDot} className="w-4 h-4 shrink-0" />
-                <span>{site.addresses[0].line}</span>
+          <div className="space-y-5 text-muted-light normal-case mb-6">
+            {site.addresses.map((a) => (
+              <div key={a.label} className="space-y-2">
+                <div className="flex items-start gap-3">
+                  <FontAwesomeIcon icon={faLocationDot} className="w-4 h-4 shrink-0 mt-1" />
+                  <span>{a.line}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <FontAwesomeIcon icon={faPhone} className="w-4 h-4 shrink-0" />
+                  <a
+                    href={`tel:${a.phone.replace(/[\s-]/g, "")}`}
+                    className="hover:text-paper transition-colors"
+                  >
+                    {a.phone}
+                  </a>
+                </div>
               </div>
-            )}
+            ))}
             <div className="flex items-center gap-3">
               <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 shrink-0" />
-              <span>{site.email}</span>
+              <a href={`mailto:${site.email}`} className="hover:text-paper transition-colors">
+                {site.email}
+              </a>
             </div>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className="flex max-w-xs">
@@ -91,7 +104,14 @@ export default function Footer() {
 
       <div className="bg-[#1a1a1a]">
         <div className="container-page py-6 flex items-center justify-between">
-          <Image src="/images/logo-mark.svg" alt={site.name} width={40} height={40} className="w-10 h-10" />
+          <Image
+            src="/images/logo-light.webp"
+            alt={site.name}
+            width={797}
+            height={214}
+            sizes="180px"
+            className="h-8 w-auto"
+          />
 
           <div className="flex items-center gap-3">
             {site.socials.map((s) => (

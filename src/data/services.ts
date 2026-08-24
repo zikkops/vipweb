@@ -1,9 +1,10 @@
 export type Service = {
+  number: string;
   slug: string;
   title: string;
-  short: string;
+  tagline: string;
   description: string;
-  points: string[];
+  capabilities: string[];
 };
 
 export const coreServices = [
@@ -15,52 +16,127 @@ export const coreServices = [
 
 export const services: Service[] = [
   {
-    slug: "brand-identity",
-    title: "Brand Identity",
-    short: "Logos, systems, and guidelines that hold up everywhere.",
+    number: "01",
+    slug: "product-development",
+    title: "Product Development",
+    tagline: "From Opportunity To Market.",
     description:
-      "We build brand identities from the ground up — strategy, naming, logo systems, color, type, and the guidelines that keep it all consistent as you grow.",
-    points: ["Brand strategy", "Logo & visual identity", "Brand guidelines", "Naming"],
+      "We help turn ideas into products, services and experiences people actually want. From identifying the opportunity to defining the offer and preparing it for launch, we connect commercial thinking with brand and customer experience.",
+    capabilities: [
+      "Market & opportunity assessment",
+      "Product and service strategy",
+      "Concept development",
+      "Customer journey development",
+      "Value proposition",
+      "Product naming",
+      "Go-to-market planning",
+      "Launch strategy",
+    ],
   },
   {
-    slug: "web-product-design",
-    title: "Web & Product Design",
-    short: "Interfaces designed to convert and built to ship.",
+    number: "02",
+    slug: "brand-strategy",
+    title: "Brand Strategy",
+    tagline: "Build The Thinking Before The Brand.",
     description:
-      "From marketing sites to full product interfaces, we design and build experiences that are fast, accessible, and genuinely easy to use.",
-    points: ["UX/UI design", "Design systems", "Front-end development", "Webflow & Next.js builds"],
+      "Strong brands start with clarity. We define what the brand stands for, where it belongs in the market and how it should show up to the people it wants to reach.",
+    capabilities: [
+      "Brand positioning",
+      "Brand architecture",
+      "Audience definition",
+      "Competitive landscape",
+      "Brand purpose & values",
+      "Brand personality",
+      "Messaging framework",
+      "Naming & verbal strategy",
+      "Communication strategy",
+      "Brand launch & rollout planning",
+    ],
   },
   {
-    slug: "advertising",
-    title: "Advertising Campaigns",
-    short: "Ideas built for the channels that matter to you.",
+    number: "03",
+    slug: "visual-identity",
+    title: "Visual Identity",
+    tagline: "Make The Brand Impossible To Confuse.",
     description:
-      "We plan and produce campaigns across digital, print, and out-of-home — grounded in a single idea strong enough to travel across every format.",
-    points: ["Campaign strategy", "Art direction", "Media planning", "Performance creative"],
+      "We translate strategy into a distinctive visual system designed to work everywhere — from a screen to a storefront, a campaign to a package.",
+    capabilities: [
+      "Logo design",
+      "Visual identity systems",
+      "Typography & color systems",
+      "Brand guidelines",
+      "Art direction",
+      "Packaging",
+      "Corporate collateral",
+      "Retail & environmental branding",
+      "Campaign identity",
+      "Brand applications",
+    ],
   },
   {
-    slug: "copywriting-content",
-    title: "Copywriting & Content",
-    short: "Copy that sounds like you, written to convert.",
+    number: "04",
+    slug: "social-media",
+    title: "Social Media",
+    tagline: "Content With A Reason To Exist.",
     description:
-      "Website copy, campaign lines, product content, and long-form storytelling — all written to match how your brand actually talks.",
-    points: ["Website copy", "Content strategy", "Editorial & blog", "Social copy"],
+      "We build social ecosystems around strategy, not posting schedules. From always-on communication to launches, campaigns and creator collaborations, every piece of content has a role.",
+    capabilities: [
+      "Social media strategy",
+      "Content strategy",
+      "Editorial planning",
+      "Creative concepts",
+      "Content creation",
+      "Reels & short-form video",
+      "Photography & production",
+      "Community management",
+      "Influencer collaborations",
+      "Paid social campaigns",
+      "Reporting & optimization",
+    ],
   },
   {
-    slug: "digital-marketing",
-    title: "Digital Marketing",
-    short: "Growth strategy backed by data, not guesswork.",
+    number: "05",
+    slug: "pr-and-awards",
+    title: "PR & Awards",
+    tagline: "Build Visibility. Earn Credibility.",
     description:
-      "SEO, paid media, and lifecycle marketing programs built to compound — with reporting that tells you exactly what's working.",
-    points: ["SEO", "Paid media", "Email & lifecycle", "Analytics & reporting"],
+      "We help brands move beyond advertising by creating stories, moments and achievements worth talking about — across media, industry platforms and award stages.",
+    capabilities: [
+      "PR strategy",
+      "Media relations",
+      "Press releases",
+      "Corporate communications",
+      "Launch communication",
+      "Influencer & creator relations",
+      "Event PR",
+      "Media partnerships",
+      "Thought leadership",
+      "Award strategy",
+      "Award submissions",
+      "Case study development",
+    ],
   },
   {
-    slug: "motion-video",
-    title: "Motion & Video",
-    short: "Motion design and video that make ideas move.",
+    number: "06",
+    slug: "digital-experience",
+    title: "Digital Experience",
+    tagline: "Digital That Works As Good As It Looks.",
     description:
-      "From product explainers to brand films, we handle concept, shoot, and post to bring a static brand to life on screen.",
-    points: ["Brand films", "Motion graphics", "Product explainers", "Social video"],
+      "We design connected digital experiences that make brands easier to discover, use and engage with. Strategy, UX, design and technology work together from the start.",
+    capabilities: [
+      "Digital strategy",
+      "Website strategy & development",
+      "E-commerce",
+      "UX/UI design",
+      "Mobile applications",
+      "Digital platforms",
+      "CRM & customer journeys",
+      "Marketing automation",
+      "SEO",
+      "Performance marketing",
+      "Analytics & reporting",
+      "Digital transformation",
+    ],
   },
 ];
 

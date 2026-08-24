@@ -2,7 +2,7 @@ import PortfolioGrid from "@/components/PortfolioGrid";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata = {
-  title: "Portfolio — Boldlab",
+  title: "Portfolio — VIPMINDS",
 };
 
 export default function PortfolioPage() {

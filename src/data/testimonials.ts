@@ -1,6 +1,6 @@
 export const testimonials = [
   {
-    quote: "Boldlab rebuilt our identity from the ground up and it finally feels like us. Every touchpoint, from the site to our pitch deck, tells the same story now.",
+    quote: "VIPMINDS rebuilt our identity from the ground up and it finally feels like us. Every touchpoint, from the site to our pitch deck, tells the same story now.",
     name: "Shirley Cox",
     role: "Founder, Nova Collective",
   },

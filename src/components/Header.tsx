@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -40,11 +41,16 @@ export default function Header() {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="w-full px-10 flex items-center justify-between h-20">
-              <Link
-                href="/"
-                className="font-heading text-3xl md:text-4xl font-semibold uppercase tracking-tight text-ink"
-              >
-                {site.name}<span className="text-muted">_</span>
+              <Link href="/" className="block">
+                <Image
+                  src="/images/logo.webp"
+                  alt={site.name}
+                  width={797}
+                  height={214}
+                  priority
+                  sizes="200px"
+                  className="h-9 md:h-10 w-auto"
+                />
               </Link>
 
               <nav className="hidden md:flex items-center gap-8">

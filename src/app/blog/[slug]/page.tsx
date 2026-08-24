@@ -15,7 +15,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const post = posts.find((p) => p.slug === slug);
-  return { title: post ? `${post.title} — Boldlab` : "Blog — Boldlab" };
+  return { title: post ? `${post.title} — VIPMINDS` : "Blog — VIPMINDS" };
 }
 
 export default async function PostPage({

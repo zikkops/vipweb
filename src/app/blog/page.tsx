@@ -3,7 +3,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 import { posts } from "@/data/blog";
 
 export const metadata = {
-  title: "Blog — Boldlab",
+  title: "Blog — VIPMINDS",
 };
 
 export default function BlogPage() {

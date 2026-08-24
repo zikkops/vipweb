@@ -4,7 +4,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 import { team } from "@/data/team";
 
 export const metadata = {
-  title: "Our Team — Boldlab",
+  title: "Our Team — VIPMINDS",
 };
 
 export default function TeamPage() {

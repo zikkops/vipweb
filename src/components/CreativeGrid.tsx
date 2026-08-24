@@ -6,6 +6,7 @@ type TextPanel = {
   letter: string;
   heading: string[];
   body: string;
+  cta: string;
   href: string;
 };
 
@@ -20,24 +21,27 @@ const panels: Panel[] = [
   {
     type: "text",
     letter: "A",
-    heading: ["We Hire Creatives", "Are You Creative?"],
-    body: "We're always looking for people who care about the work as much as we do.",
+    heading: ["We’re Always Looking", "For Great Minds."],
+    body: "Creative, strategic, curious or technical — if you think differently and care about making strong work, we want to hear from you.",
+    cta: "Join The Team",
     href: "/contact",
   },
   { type: "image", src: "/images/misc/creative-1.jpg" },
   {
     type: "text",
     letter: "B",
-    heading: ["Get In Touch.", "Think Way Ahead."],
-    body: "Got a brief, a rough idea, or just a question? We'd like to hear it.",
+    heading: ["Let’s Talk.", "Build What’s Next."],
+    body: "Have a project, challenge or idea in mind? Tell us where you want to go and we’ll bring the right minds together to make it happen.",
+    cta: "Get In Touch",
     href: "/contact",
   },
   { type: "image", src: "/images/misc/creative-2.jpg" },
   {
     type: "text",
     letter: "C",
-    heading: ["We Move Fast.", "Ideas Ship Weekly."],
-    body: "Small senior team, short feedback loops, no layers of approval.",
+    heading: ["We Move Fast.", "We Work As One."],
+    body: "Strategy, creative, digital, technology and execution come together in one team — fewer layers, sharper decisions and faster delivery.",
+    cta: "How We Work",
     href: "/about",
   },
   { type: "image", src: "/images/misc/creative-3.jpg" },
@@ -79,9 +83,15 @@ export default function CreativeGrid() {
               <p className="text-muted text-[16px] max-w-xs mb-6 normal-case">{panel.body}</p>
               <Link
                 href={panel.href}
-                className="font-heading text-sm uppercase tracking-widest hover:text-muted transition-colors"
+                className="group/cta font-heading font-semibold text-sm uppercase tracking-widest inline-flex items-center gap-2 hover:text-muted transition-colors"
               >
-                Read More _
+                {panel.cta}
+                <span
+                  aria-hidden
+                  className="transition-transform duration-300 ease-out group-hover/cta:translate-x-1"
+                >
+                  &rarr;
+                </span>
               </Link>
             </div>
           </div>

@@ -17,7 +17,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
-  return { title: project ? `${project.title} — Boldlab` : "Project — Boldlab" };
+  return { title: project ? `${project.title} — VIPMINDS` : "Project — VIPMINDS" };
 }
 
 export default async function ProjectPage({

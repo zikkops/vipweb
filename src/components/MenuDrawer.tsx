@@ -56,11 +56,14 @@ export default function MenuDrawer({ open, onClose }: { open: boolean; onClose: 
               </svg>
             </button>
 
-            <Image src="/images/logo-mark.svg" alt="" width={64} height={64} className="w-16 h-16" />
-
-            <div className="bg-paper text-ink font-heading text-3xl font-semibold uppercase tracking-tight px-4 py-2">
-              {site.name}
-            </div>
+            <Image
+              src="/images/logo-light.webp"
+              alt={site.name}
+              width={797}
+              height={214}
+              sizes="260px"
+              className="h-12 w-auto"
+            />
 
             <p className="text-paper/60 text-sm max-w-xs normal-case">{site.tagline}</p>
 

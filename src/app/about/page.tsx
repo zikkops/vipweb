@@ -5,12 +5,11 @@ import TeamCard from "@/components/TeamCard";
 import Accordion from "@/components/Accordion";
 import Button from "@/components/Button";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
-import { awards } from "@/data/awards";
 import { team } from "@/data/team";
 import { workAccordion } from "@/data/process";
 
 export const metadata = {
-  title: "About Us — Boldlab",
+  title: "About Us — VIPMINDS",
 };
 
 export default function AboutPage() {
@@ -32,7 +31,7 @@ export default function AboutPage() {
           <div className="relative aspect-[4/3] overflow-hidden">
             <Image
               src="/images/misc/about-us.jpg"
-              alt="Boldlab studio"
+              alt="VIPMINDS studio"
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
@@ -41,7 +40,7 @@ export default function AboutPage() {
         </Reveal>
         <Reveal delay={0.15}>
           <p className="text-muted normal-case text-lg mb-4">
-            Boldlab started as a two-person design shop in 2016 and has grown
+            VIPMINDS started as a two-person design shop in 2016 and has grown
             into a full-service creative agency without losing the parts that
             made the work good in the first place: small teams, direct
             communication, and a genuine obsession with craft.
@@ -54,22 +53,6 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <section className="bg-surface py-20 md:py-28">
-        <div className="container-page">
-          <Reveal>
-            <SectionHeading eyebrow="Recognition" title="Awards_" align="center" />
-          </Reveal>
-          <RevealGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {awards.map((a) => (
-              <RevealItem key={a.title} className="border border-hairline p-6 bg-paper">
-                <h3 className="font-heading text-xl mb-1">{a.title}</h3>
-                <div className="text-sm text-muted mb-3">{a.subtitle}</div>
-                <p className="text-muted text-sm normal-case">{a.description}</p>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
-      </section>
 
       <section className="container-page py-20 md:py-28">
         <Reveal>

@@ -64,8 +64,12 @@ export default function HomeContact() {
             <h4 className="font-heading text-[26px] mb-2">{a.label}</h4>
             <p className="text-muted text-[16px] normal-case mb-6">{a.line}</p>
 
-            <h4 className="font-heading text-[26px] mb-2">Ring Us</h4>
-            <p className="text-muted text-[16px] normal-case mb-6">{site.phone}</p>
+            <h4 className="font-heading text-[26px] mb-2">Call Us</h4>
+            <p className="text-muted text-[16px] normal-case mb-6">
+              <a href={`tel:${a.phone.replace(/[\s-]/g, "")}`} className="hover:text-ink transition-colors">
+                {a.phone}
+              </a>
+            </p>
 
             <h4 className="font-heading text-[26px] mb-2">Email Us</h4>
             <p className="text-muted text-[16px] normal-case">{site.email}</p>

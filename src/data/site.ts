@@ -1,13 +1,21 @@
 export const site = {
-  name: "Boldlab",
+  name: "VIPMINDS",
   tagline: "A creative agency for brands that refuse to blend in.",
   description:
-    "Boldlab is a creative agency specializing in brand identity, web design, and advertising for companies who want to stand out.",
-  email: "hello@boldlab.studio",
-  phone: "+1 202 555 0133",
+    "VIPMINDS is a creative agency specializing in brand identity, web design, and advertising for companies who want to stand out.",
+  email: "marketing@vipminds.com",
+  phone: "+1 702 334-0277",
   addresses: [
-    { label: "New York Studio", line: "3 Wakehurst Street, New York, NY 10002" },
-    { label: "London Studio", line: "26 Whitehall, Westminster, London" },
+    {
+      label: "Las Vegas",
+      line: "8890 Spanish Ridge Ave, Las Vegas, NV 89148, United States",
+      phone: "+1 702 334-0277",
+    },
+    {
+      label: "Beirut",
+      line: "Jal El Dib, Beirut, Lebanon",
+      phone: "+961 3 373882",
+    },
   ],
   socials: [
     { label: "Instagram", href: "https://instagram.com" },

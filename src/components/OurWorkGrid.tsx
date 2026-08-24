@@ -4,27 +4,27 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 const items = [
   {
     number: "01",
-    lines: ["Get In Touch.", "Start A Project."],
+    lines: ["Start A Project.", "Let’s Create Something."],
     description:
-      "Have a project in mind? Tell us where you're headed and we'll tell you how we'd get you there.",
+      "Have a challenge, idea or opportunity? We bring strategy, creativity, technology and execution together to make it happen.",
   },
   {
     number: "02",
-    lines: ["See Our Work.", "Recent Projects."],
+    lines: ["See Our Work.", "Explore Our Projects."],
     description:
-      "A look at the brands, sites, and campaigns we've shipped for clients who wanted to stand out.",
+      "Discover the brands, campaigns, platforms and experiences we’ve created across industries and markets.",
   },
   {
     number: "03",
-    lines: ["Meet The Team.", "The People Behind It."],
+    lines: ["Meet The Team.", "The Minds Behind It."],
     description:
-      "Small, senior, and hands-on — get to know the people who'll actually be doing the work.",
+      "Strategists, creatives, technologists and makers working together from idea to execution.",
   },
   {
-    number: "FAQ",
-    lines: ["Ask Anything.", "Learn Everything."],
+    number: "04",
+    lines: ["Ask Anything.", "Get To Know Us."],
     description:
-      "Answers to the questions we get asked most, from timelines and pricing to how we structure work.",
+      "Explore how we work, what we do and how we can build the right solution for your business.",
   },
 ];
 
