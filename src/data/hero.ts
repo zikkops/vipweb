@@ -1,23 +1,23 @@
 export const heroSlides = [
   {
-    image: "/images/hero/slide-1.jpg",
+    image: "/images/hero/particle-wave-purple.jpg",
     eyebrow: "Only Authentic",
-    titleLines: ["We Make Digital", "Experiences That Refuse", "To Blend In_"] as [string, string, string],
+    titleLines: ["We Take Ideas", "All The Way", "To Execution_"],
     href: "/about",
     cta: "About Us",
   },
   {
-    image: "/images/hero/slide-2.jpg",
+    image: "/images/hero/particle-wave-purple.jpg",
     eyebrow: "Fresh Perspective",
-    titleLines: ["Build Up A Brand", "Image That Actually", "Sticks_"] as [string, string, string],
-    href: "/services",
-    cta: "Our Process",
-  },
-  {
-    image: "/images/hero/slide-3.jpg",
-    eyebrow: "Full Service",
-    titleLines: ["Time To Enhance", "Your Online", "Presentation_"] as [string, string, string],
+    titleLines: ["Built For", "End-To-End", "Impact_"],
     href: "/services",
     cta: "Our Services",
+  },
+  {
+    image: "/images/hero/particle-wave-purple.jpg",
+    eyebrow: "Full Service",
+    titleLines: ["Small Enough", "To Move Fast.", "Big Enough", "To Scale_"],
+    href: "/portfolio",
+    cta: "Our Work",
   },
 ];

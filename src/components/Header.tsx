@@ -52,7 +52,7 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="group relative font-heading font-medium uppercase text-[19px] tracking-widest pb-1 text-ink"
+                    className="group relative font-heading font-semibold uppercase text-[19px] tracking-widest pb-1 text-ink"
                   >
                     {item.label}
                     <span

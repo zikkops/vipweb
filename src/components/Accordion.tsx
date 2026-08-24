@@ -32,7 +32,7 @@ export default function Accordion({
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               />
               <span
-                className={`relative z-10 font-heading text-[26px] p-[5px] transition-colors duration-300 ${
+                className={`relative z-10 font-heading uppercase text-[26px] p-[5px] transition-colors duration-300 ${
                   showBlack ? "text-paper" : "text-ink"
                 }`}
               >

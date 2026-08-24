@@ -73,7 +73,7 @@ export default function HeroSlider() {
   const slide = heroSlides[index];
 
   return (
-    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-ink">
+    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-black">
       <HeroNav />
 
       {/* Image layer animates independently */}
@@ -104,19 +104,19 @@ export default function HeroSlider() {
         <div className="container-page">
           <AnimatePresence mode="wait">
             <motion.div
-              key={slide.image}
+              key={index}
               variants={textGroupVariants}
               initial="initial"
               animate={revealed ? "animate" : "initial"}
               exit="exit"
               className="max-w-2xl"
             >
-              <h1 className="flex flex-col items-start gap-[6px] text-[95px] leading-[1.15] mb-8">
+              <h1 className="flex flex-col items-start gap-[6px] text-[95px] leading-[90px] mb-8">
                 {slide.titleLines.map((line, i) => (
                   <motion.span
                     key={i}
                     variants={squishVariants}
-                    className="bg-paper text-ink px-3 py-1 box-decoration-clone"
+                    className="bg-paper text-ink px-[5px] pt-0 pb-[5px] box-decoration-clone"
                   >
                     {line}
                   </motion.span>

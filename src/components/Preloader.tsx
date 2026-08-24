@@ -16,7 +16,7 @@ export default function Preloader() {
     <AnimatePresence>
       {loading && (
         <motion.div
-          className="fixed inset-0 z-[100] bg-brand-purple"
+          className="fixed inset-0 z-[100] bg-black"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}

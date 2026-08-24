@@ -2,21 +2,13 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import type { Project } from "@/data/portfolio";
+import type { WorkItem } from "@/data/work";
 
-const spans = [
-  "col-span-2 row-span-2",
-  "col-span-2 row-span-1",
-  "col-span-1 row-span-2",
-  "col-span-1 row-span-1",
-  "col-span-1 row-span-1",
-  "col-span-1 row-span-1",
-  "col-span-1 row-span-2",
-  "col-span-2 row-span-1",
-  "col-span-1 row-span-1",
-];
+// Tailwind needs these span classes to appear literally so it emits them.
+// The span each item uses lives on the item itself (work.ts), chosen to match
+// its cover's aspect ratio: square -> 2x2 or 1x1, portrait -> 1x2, wide -> 2x1.
+// col-span-2 row-span-2 | row-span-2 | col-span-2
 
 const groupVariants = {
   initial: {},
@@ -38,8 +30,8 @@ const labelVariants = {
   },
 };
 
-export default function PortfolioMosaic({ projects }: { projects: Project[] }) {
-  const [hovered, setHovered] = useState<Project | null>(null);
+export default function PortfolioMosaic({ items }: { items: WorkItem[] }) {
+  const [hovered, setHovered] = useState<WorkItem | null>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [flip, setFlip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -52,14 +44,14 @@ export default function PortfolioMosaic({ projects }: { projects: Project[] }) {
 
   return (
     <div
-      className="grid grid-cols-2 md:grid-cols-4 grid-flow-row-dense auto-rows-[40vh] gap-0"
+      className="grid grid-cols-2 lg:grid-cols-4 grid-flow-row-dense auto-rows-[50vw] lg:auto-rows-[25vw] gap-0"
       onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })}
     >
-      {projects.slice(0, 9).map((project, i) => (
-        <Link
+      {items.slice(0, 9).map((project) => (
+        // detail pages are disabled for now — tiles are display-only
+        <div
           key={project.slug}
-          href={`/portfolio/${project.slug}`}
-          className={`group relative block overflow-hidden bg-ink ${spans[i] ?? "col-span-1 row-span-1"}`}
+          className={`group relative block overflow-hidden bg-ink ${project.span}`}
           onMouseEnter={() => setHovered(project)}
           onMouseLeave={() => setHovered(null)}
         >
@@ -67,10 +59,10 @@ export default function PortfolioMosaic({ projects }: { projects: Project[] }) {
             src={project.image}
             alt={project.title}
             fill
-            sizes="(min-width: 1024px) 25vw, 50vw"
+            sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           />
-        </Link>
+        </div>
       ))}
 
       <AnimatePresence>

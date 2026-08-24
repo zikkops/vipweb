@@ -1,8 +1,8 @@
 import SectionHeading from "@/components/SectionHeading";
+import CapabilitiesGrid from "@/components/CapabilitiesGrid";
 import PortfolioMosaic from "@/components/PortfolioMosaic";
 import NewsCard from "@/components/NewsCard";
 import AwardCard from "@/components/AwardCard";
-import RotatingIcon from "@/components/RotatingIcon";
 import TeamShowcase from "@/components/TeamShowcase";
 import CreativeGrid from "@/components/CreativeGrid";
 import ClientsLogoGrid from "@/components/ClientsLogoGrid";
@@ -15,9 +15,8 @@ import Newsletter from "@/components/Newsletter";
 import OurWorkGrid from "@/components/OurWorkGrid";
 import HomeContact from "@/components/HomeContact";
 import HeroSlider from "@/components/HeroSlider";
-import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
-import { coreServices } from "@/data/services";
-import { projects } from "@/data/portfolio";
+import { Reveal } from "@/components/Reveal";
+import { featuredWork } from "@/data/work";
 import { posts } from "@/data/blog";
 import { testimonials } from "@/data/testimonials";
 import { stats } from "@/data/stats";
@@ -26,39 +25,18 @@ import { workAccordion } from "@/data/process";
 import { team } from "@/data/team";
 import { awards } from "@/data/awards";
 
-const iconRotations = [
-  { angle: 36, delay: 0 },
-  { angle: -48, delay: 0.7 },
-  { angle: 60, delay: 1.4 },
-  { angle: -30, delay: 2.1 },
-];
-
 export default function Home() {
   return (
     <>
       <HeroSlider />
 
-      {/* Services strip */}
-      <section className="py-20 md:py-28">
-        <RevealGroup className="container-page grid grid-cols-2 md:grid-cols-4">
-          {coreServices.map((s, i) => (
-            <RevealItem key={s.title} className="py-10 px-4 flex flex-col items-center text-center">
-              <RotatingIcon
-                src={s.icon}
-                angle={iconRotations[i % iconRotations.length].angle}
-                delay={iconRotations[i % iconRotations.length].delay}
-              />
-              <h3 className="font-heading text-[26px] mb-2">{s.title}</h3>
-              <p className="text-muted text-[16px] normal-case">{s.short}</p>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </section>
+      {/* Capabilities */}
+      <CapabilitiesGrid />
 
       {/* Portfolio teaser */}
       <section className="pb-20 md:pb-28">
         <Reveal delay={0.1}>
-          <PortfolioMosaic projects={projects} />
+          <PortfolioMosaic items={featuredWork} />
         </Reveal>
       </section>
 

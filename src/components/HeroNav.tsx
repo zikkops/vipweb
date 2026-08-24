@@ -26,7 +26,7 @@ export default function HeroNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="group relative font-heading font-medium uppercase text-[19px] tracking-widest pb-1 text-paper"
+              className="group relative font-heading font-semibold uppercase text-[19px] tracking-widest pb-1 text-paper"
             >
               {item.label}
               <span

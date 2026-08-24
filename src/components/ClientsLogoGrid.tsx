@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-type Client = { name: string; logo: string };
+import type { Client } from "@/data/clients";
 
 export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -28,7 +28,7 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
   }, [clients]);
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-x-8 gap-y-12">
+    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-10">
       {clients.map((client, i) => {
         const isDimmed = hoveredIndex !== null && hoveredIndex !== i;
         return (
@@ -40,7 +40,7 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
           transition={{ duration: 0.6, delay: delays[i], ease: "easeOut" }}
         >
           <motion.div
-            className="flex items-center justify-center py-2"
+            className="flex h-14 md:h-16 items-center justify-center"
             onMouseEnter={() => setHoveredIndex(i)}
             onMouseLeave={() => setHoveredIndex(null)}
             animate={{ opacity: isDimmed ? 0.12 : 1 }}
@@ -51,15 +51,17 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
             }
           >
             <motion.div
+              className="flex h-full w-full items-center justify-center"
               whileHover={{ y: [0, -5, 0] }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
               <Image
                 src={client.logo}
                 alt={client.name}
-                width={72}
-                height={72}
-                className="object-contain w-14 h-14 md:w-16 md:h-16"
+                width={client.width}
+                height={client.height}
+                sizes="200px"
+                className="object-contain h-auto w-auto max-h-full max-w-full"
               />
             </motion.div>
           </motion.div>

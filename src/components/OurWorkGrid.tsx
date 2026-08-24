@@ -45,7 +45,7 @@ export default function OurWorkGrid() {
             <RevealItem key={item.number} className="relative">
               <span
                 aria-hidden
-                className="absolute -top-2 left-0 font-heading font-semibold text-[220px] leading-none text-hairline select-none pointer-events-none"
+                className="absolute top-[69px] left-[-14px] font-heading font-bold text-[250px] leading-[25px] text-hairline select-none pointer-events-none"
               >
                 {item.number}
               </span>

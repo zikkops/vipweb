@@ -26,7 +26,7 @@ export default function NewsCard({ post }: { post: Post }) {
         <LineWipeTitle
           text={post.title}
           hovered={hovered}
-          textClassName="font-heading font-semibold text-[35px] leading-snug"
+          textClassName="font-heading font-semibold uppercase text-[35px] leading-[1.06]"
         />
       </Link>
       <Link
