@@ -6,14 +6,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { nav, site } from "@/data/site";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import MenuTrigger from "./MenuTrigger";
 import MenuDrawer from "./MenuDrawer";
+
+const NAV_IDS = nav.map((n) => n.id);
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const pathname = usePathname();
+  const activeSection = useActiveSection(NAV_IDS);
   const isHome = pathname === "/";
   const visible = !isHome || pastHero;
 
@@ -63,7 +67,7 @@ export default function Header() {
                     {item.label}
                     <span
                       className={`absolute left-0 bottom-0 h-[4px] w-full bg-ink origin-left transition-transform duration-300 ease-out ${
-                        pathname === item.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                        activeSection === item.id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                       }`}
                     />
                   </Link>

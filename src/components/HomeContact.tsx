@@ -12,7 +12,7 @@ export default function HomeContact() {
   }
 
   return (
-    <section className="max-w-[1100px] mx-auto py-20 md:py-28 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16">
+    <section id="contact" className="max-w-[1100px] mx-auto py-20 md:py-28 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16 scroll-mt-20">
       <div>
         <h2 className="text-[55px] leading-tight mb-8">
           Don&apos;t Be Shy, Say Hello!

@@ -26,11 +26,8 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Portfolio", href: "/portfolio" },
-  { label: "Team", href: "/team" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { label: "Home", href: "/#home", id: "home" },
+  { label: "Services", href: "/#services", id: "services" },
+  { label: "Portfolio", href: "/#portfolio", id: "portfolio" },
+  { label: "Contact", href: "/#contact", id: "contact" },
 ];

@@ -1,11 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { capabilities } from "@/data/services";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 
 export default function CapabilitiesGrid() {
   return (
-    <section className="min-h-screen flex items-center py-12">
+    <section id="services" className="min-h-screen flex items-center py-12 scroll-mt-20">
       <div className="container-page">
         <Reveal>
           <p className="font-heading font-semibold uppercase text-[13px] tracking-[0.25em] text-accent mb-4">
@@ -24,10 +23,7 @@ export default function CapabilitiesGrid() {
         <RevealGroup className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {capabilities.map((c) => (
             <RevealItem key={c.number} className="h-full">
-              <Link
-                href={c.href}
-                className="group flex h-full items-center gap-4 bg-surface p-5 transition-colors duration-300 hover:bg-hairline"
-              >
+              <div className="group flex h-full items-center gap-4 bg-surface p-5 transition-colors duration-300 hover:bg-hairline">
                 <div className="shrink-0 w-[72px] md:w-[84px]">
                   <Image
                     src={c.icon}
@@ -50,7 +46,7 @@ export default function CapabilitiesGrid() {
                     ))}
                   </h3>
                 </div>
-              </Link>
+              </div>
             </RevealItem>
           ))}
         </RevealGroup>

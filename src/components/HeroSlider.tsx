@@ -73,7 +73,7 @@ export default function HeroSlider() {
   const slide = heroSlides[index];
 
   return (
-    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-black">
+    <section id="home" ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-black">
       <HeroNav />
 
       {/* Image layer animates independently */}

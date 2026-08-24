@@ -1,4 +1,5 @@
 import SectionHeading from "@/components/SectionHeading";
+import AboutIntro from "@/components/AboutIntro";
 import CapabilitiesGrid from "@/components/CapabilitiesGrid";
 import PortfolioMosaic from "@/components/PortfolioMosaic";
 import CreativeGrid from "@/components/CreativeGrid";
@@ -22,11 +23,14 @@ export default function Home() {
     <>
       <HeroSlider />
 
+      {/* About */}
+      <AboutIntro />
+
       {/* Capabilities */}
       <CapabilitiesGrid />
 
       {/* Portfolio teaser */}
-      <section className="pb-20 md:pb-28">
+      <section id="portfolio" className="pb-20 md:pb-28 scroll-mt-20">
         <Reveal delay={0.1}>
           <PortfolioMosaic items={featuredWork} />
         </Reveal>

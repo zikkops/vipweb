@@ -3,14 +3,16 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { nav, site } from "@/data/site";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import MenuTrigger from "./MenuTrigger";
 import MenuDrawer from "./MenuDrawer";
 
+const NAV_IDS = nav.map((n) => n.id);
+
 export default function HeroNav() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const activeSection = useActiveSection(NAV_IDS);
 
   return (
     <div className="absolute inset-x-0 top-0 z-20">
@@ -37,7 +39,7 @@ export default function HeroNav() {
               {item.label}
               <span
                 className={`absolute left-0 bottom-0 h-[4px] w-full bg-paper origin-left transition-transform duration-300 ease-out ${
-                  pathname === item.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  activeSection === item.id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}
               />
             </Link>

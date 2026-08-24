@@ -24,7 +24,7 @@ const panels: Panel[] = [
     heading: ["We’re Always Looking", "For Great Minds."],
     body: "Creative, strategic, curious or technical — if you think differently and care about making strong work, we want to hear from you.",
     cta: "Join The Team",
-    href: "/contact",
+    href: "/#contact",
   },
   { type: "image", src: "/images/misc/creative-1.jpg" },
   {
@@ -33,7 +33,7 @@ const panels: Panel[] = [
     heading: ["Let’s Talk.", "Build What’s Next."],
     body: "Have a project, challenge or idea in mind? Tell us where you want to go and we’ll bring the right minds together to make it happen.",
     cta: "Get In Touch",
-    href: "/contact",
+    href: "/#contact",
   },
   { type: "image", src: "/images/misc/creative-2.jpg" },
   {
@@ -42,7 +42,7 @@ const panels: Panel[] = [
     heading: ["We Move Fast.", "We Work As One."],
     body: "Strategy, creative, digital, technology and execution come together in one team — fewer layers, sharper decisions and faster delivery.",
     cta: "How We Work",
-    href: "/about",
+    href: "/#services",
   },
   { type: "image", src: "/images/misc/creative-3.jpg" },
 ];

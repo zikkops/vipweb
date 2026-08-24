@@ -203,8 +203,8 @@ export const clients: Client[] = [
   {
     name: "Beirut Duty Free",
     logo: "/images/clients/beirut-duty-free.webp",
-    width: 321,
-    height: 105,
+    width: 440,
+    height: 113,
   },
   {
     name: "DANDS Dips and Sticks",
