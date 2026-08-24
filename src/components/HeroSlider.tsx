@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { heroSlides } from "@/data/hero";
@@ -9,18 +8,6 @@ import { PRELOAD_MS } from "@/lib/preload";
 import HeroNav from "./HeroNav";
 
 const AUTO_ADVANCE_MS = 6000;
-
-const imageVariants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
 
 const textGroupVariants = {
   initial: {},
@@ -76,28 +63,21 @@ export default function HeroSlider() {
     <section id="home" ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-black">
       <HeroNav />
 
-      {/* Image layer animates independently */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={slide.image}
-          className="absolute inset-0"
-          style={{ y, scale: 2 }}
-          variants={imageVariants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-        >
-          <Image
-            src={slide.image}
-            alt=""
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-ink/30" />
-        </motion.div>
-      </AnimatePresence>
+      {/* Looping wave background, shared by every slide */}
+      <motion.div className="absolute inset-0" style={{ y, scale: 2 }}>
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/videos/hero-wave.mp4"
+          poster="/images/hero/hero-wave-poster.webp"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-ink/30" />
+      </motion.div>
 
       {/* Text layer animates independently */}
       <div className="relative z-10 h-full flex items-center">

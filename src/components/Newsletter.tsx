@@ -1,17 +1,5 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faXTwitter, faBehance, faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { site } from "@/data/site";
-
-const socialIcons: Record<string, IconDefinition> = {
-  Instagram: faInstagram,
-  Twitter: faXTwitter,
-  Behance: faBehance,
-  Facebook: faFacebookF,
-};
-
 export default function Newsletter() {
   return (
     <section className="bg-ink text-paper py-20 md:py-28">
@@ -35,19 +23,6 @@ export default function Newsletter() {
             <span className="animate-[color-blink_3s_steps(1)_infinite]">_</span>
           </button>
         </form>
-
-        <div className="flex gap-3 mt-8">
-          {site.socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              aria-label={s.label}
-              className="w-9 h-9 flex items-center justify-center bg-paper text-ink hover:bg-muted-light transition-colors"
-            >
-              <FontAwesomeIcon icon={socialIcons[s.label]} className="w-4 h-4" />
-            </a>
-          ))}
-        </div>
       </div>
     </section>
   );

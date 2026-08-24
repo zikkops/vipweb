@@ -6,7 +6,6 @@ import PortfolioMosaic from "@/components/PortfolioMosaic";
 import CreativeGrid from "@/components/CreativeGrid";
 import ClientsLogoGrid from "@/components/ClientsLogoGrid";
 import StatBlock from "@/components/StatBlock";
-import AutoplayVideo from "@/components/AutoplayVideo";
 import Accordion from "@/components/Accordion";
 import Newsletter from "@/components/Newsletter";
 import OurWorkGrid from "@/components/OurWorkGrid";
@@ -42,22 +41,6 @@ export default function Home() {
           {stats.map((s) => (
             <StatBlock key={s.label} label={s.label} value={s.value} />
           ))}
-        </div>
-      </section>
-
-      {/* Showcase video */}
-      <section className="pt-20 md:pt-28">
-        <div className="container-page">
-          <Reveal>
-            <SectionHeading
-              title="Beirut Duty Free Film"
-              titleClassName="text-[70px]"
-              underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
-            />
-          </Reveal>
-        </div>
-        <div className="mt-10 h-[75vh] w-full overflow-hidden">
-          <AutoplayVideo src="/videos/beirut-duty-free-film.mp4" />
         </div>
       </section>
 

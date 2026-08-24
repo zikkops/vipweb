@@ -26,7 +26,7 @@ const panels: Panel[] = [
     cta: "Join The Team",
     href: "/#contact",
   },
-  { type: "image", src: "/images/misc/creative-1.jpg" },
+  { type: "image", src: "/images/misc/creative-1.webp" },
   {
     type: "text",
     letter: "B",
@@ -35,7 +35,7 @@ const panels: Panel[] = [
     cta: "Get In Touch",
     href: "/#contact",
   },
-  { type: "image", src: "/images/misc/creative-2.jpg" },
+  { type: "image", src: "/images/misc/creative-2.webp" },
   {
     type: "text",
     letter: "C",
@@ -44,7 +44,7 @@ const panels: Panel[] = [
     cta: "How We Work",
     href: "/#services",
   },
-  { type: "image", src: "/images/misc/creative-3.jpg" },
+  { type: "image", src: "/images/misc/creative-3.webp" },
 ];
 
 export default function CreativeGrid() {
