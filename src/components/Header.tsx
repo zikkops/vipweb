@@ -45,7 +45,7 @@ export default function Header() {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="w-full px-10 flex items-center justify-between h-20">
-              <Link href="/" className="block">
+              <Link href="/#home" className="block">
                 <Image
                   src="/images/logo.webp"
                   alt={site.name}

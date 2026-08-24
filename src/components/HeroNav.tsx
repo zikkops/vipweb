@@ -17,7 +17,7 @@ export default function HeroNav() {
   return (
     <div className="absolute inset-x-0 top-0 z-20">
       <div className="w-full px-10 flex items-center justify-between h-20">
-        <Link href="/" className="block">
+        <Link href="/#home" className="block">
           <Image
             src="/images/logo-light.webp"
             alt={site.name}
