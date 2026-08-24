@@ -61,8 +61,7 @@ export default function HomeContact() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
         {site.addresses.map((a) => (
           <div key={a.label}>
-            <h4 className="font-heading text-[26px] mb-2">{a.label}</h4>
-            <p className="text-muted text-[16px] normal-case mb-6">{a.line}</p>
+            <h4 className="font-heading text-[26px] mb-6">{a.label}</h4>
 
             <h4 className="font-heading text-[26px] mb-2">Call Us</h4>
             <p className="text-muted text-[16px] normal-case mb-6">

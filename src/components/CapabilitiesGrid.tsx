@@ -1,19 +1,23 @@
 import Image from "next/image";
+import SectionHeading from "@/components/SectionHeading";
 import { capabilities } from "@/data/services";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
+import { SECTION_TITLE_CLASS, SECTION_UNDERSCORE_CLASS } from "@/lib/section";
 
 export default function CapabilitiesGrid() {
   return (
     <section id="services" className="min-h-screen flex items-center py-12 scroll-mt-20">
       <div className="container-page">
         <Reveal>
-          <p className="font-heading font-semibold uppercase text-[13px] tracking-[0.25em] text-accent mb-4">
-            Built For End-To-End Impact_
-          </p>
-          <h2 className="text-[32px] md:text-[42px] leading-[1.08] mb-4">
+          <SectionHeading
+            title="Our Services"
+            titleClassName={SECTION_TITLE_CLASS}
+            underscoreClassName={SECTION_UNDERSCORE_CLASS}
+          />
+          <p className="mt-6 font-heading font-semibold uppercase text-[24px] md:text-[32px] leading-[1.12] mb-4">
             <span className="block">Strategy. Creativity. Execution.</span>
             <span className="block">All Working Together Under One Roof.</span>
-          </h2>
+          </p>
           <p className="text-muted text-[15px] normal-case leading-relaxed max-w-lg mb-8">
             From the spark of an idea to its launch and beyond, we deliver everything brands need to
             grow, connect and win.

@@ -34,7 +34,7 @@ export default function Home() {
           <Reveal>
             <SectionHeading
               title="A Glimpse Into Our Portfolio"
-              titleClassName="text-[34px] sm:text-[46px] lg:text-[60px] leading-[1.06]"
+              titleClassName="text-[44px] sm:text-[56px] lg:text-[70px] leading-[1.06]"
               underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
             />
           </Reveal>

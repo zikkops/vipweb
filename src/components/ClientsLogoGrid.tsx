@@ -28,7 +28,7 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
   }, [clients]);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-12">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-14">
       {clients.map((client, i) => {
         const isDimmed = hoveredIndex !== null && hoveredIndex !== i;
         return (
@@ -40,7 +40,7 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
           transition={{ duration: 0.6, delay: delays[i], ease: "easeOut" }}
         >
           <motion.div
-            className="flex h-20 md:h-24 items-center justify-center"
+            className="flex h-24 sm:h-28 lg:h-32 items-center justify-center"
             onMouseEnter={() => setHoveredIndex(i)}
             onMouseLeave={() => setHoveredIndex(null)}
             animate={{ opacity: isDimmed ? 0.12 : 1 }}

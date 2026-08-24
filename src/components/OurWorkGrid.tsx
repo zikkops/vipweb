@@ -35,7 +35,7 @@ export default function OurWorkGrid() {
         <Reveal>
           <SectionHeading
             title="Our Work"
-            titleClassName="text-[44px] sm:text-[56px] lg:text-[70px] font-normal whitespace-nowrap"
+            titleClassName="text-[44px] sm:text-[56px] lg:text-[70px] whitespace-nowrap"
             underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]"
           />
         </Reveal>
