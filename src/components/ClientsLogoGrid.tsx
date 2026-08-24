@@ -40,7 +40,7 @@ export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
           transition={{ duration: 0.6, delay: delays[i], ease: "easeOut" }}
         >
           <motion.div
-            className="flex h-24 sm:h-28 lg:h-32 items-center justify-center"
+            className="flex h-[115px] sm:h-[134px] lg:h-[154px] items-center justify-center"
             onMouseEnter={() => setHoveredIndex(i)}
             onMouseLeave={() => setHoveredIndex(null)}
             animate={{ opacity: isDimmed ? 0.12 : 1 }}

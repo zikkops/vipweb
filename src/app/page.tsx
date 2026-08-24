@@ -12,6 +12,7 @@ import OurWorkGrid from "@/components/OurWorkGrid";
 import HomeContact from "@/components/HomeContact";
 import HeroSlider from "@/components/HeroSlider";
 import { Reveal } from "@/components/Reveal";
+import { SECTION_TITLE_CLASS, SECTION_UNDERSCORE_CLASS } from "@/lib/section";
 import { featuredWork } from "@/data/work";
 import { stats } from "@/data/stats";
 import { clients } from "@/data/clients";
@@ -53,11 +54,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clients */}
+      {/* Clients — wider than the page container so the logos get real room */}
       <section className="bg-paper py-16">
         <div className="container-page">
           <Reveal>
-            <SectionHeading title="Our Clients" titleClassName="text-[44px] sm:text-[56px] lg:text-[70px]" underscoreClassName="animate-[color-blink_6s_steps(1)_infinite]" />
+            <SectionHeading
+              title="Our Clients"
+              titleClassName={SECTION_TITLE_CLASS}
+              underscoreClassName={SECTION_UNDERSCORE_CLASS}
+            />
           </Reveal>
           <Reveal delay={0.1} className="mt-12">
             <ClientsLogoGrid clients={clients} />

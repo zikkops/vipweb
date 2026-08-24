@@ -5,15 +5,21 @@ export const site = {
     "VIPMINDS is a creative agency specializing in brand identity, web design, and advertising for companies who want to stand out.",
   email: "marketing@vipminds.com",
   phone: "+1 702 334-0277",
+  // `line` is optional — Beverly Hills has no street address supplied yet.
   addresses: [
     {
       label: "Las Vegas",
-      line: "8890 Spanish Ridge Ave, Las Vegas, NV 89148, United States",
+      line: "8890 Spanish Ridge Ave, Las Vegas, NV 89148, United States" as string | undefined,
+      phone: "+1 702 334-0277",
+    },
+    {
+      label: "Beverly Hills",
+      line: undefined as string | undefined,
       phone: "+1 702 334-0277",
     },
     {
       label: "Beirut",
-      line: "Jal El Dib, Beirut, Lebanon",
+      line: "Jal El Dib, Beirut, Lebanon" as string | undefined,
       phone: "+961 3 373882",
     },
   ],

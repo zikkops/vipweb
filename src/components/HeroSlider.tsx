@@ -87,9 +87,9 @@ export default function HeroSlider() {
               initial="initial"
               animate={revealed ? "animate" : "initial"}
               exit="exit"
-              className="max-w-2xl"
+              className="max-w-2xl text-center sm:text-left mx-auto sm:mx-0"
             >
-              <h1 className="flex flex-col items-start gap-[6px] text-[40px] leading-[38px] sm:text-[62px] sm:leading-[60px] lg:text-[95px] lg:leading-[90px] mb-8">
+              <h1 className="flex flex-col items-center sm:items-start gap-[6px] text-[40px] leading-[38px] sm:text-[62px] sm:leading-[60px] lg:text-[95px] lg:leading-[90px] mb-8">
                 {slide.titleLines.map((line, i) => (
                   <motion.span
                     key={i}

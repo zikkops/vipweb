@@ -49,10 +49,12 @@ export default function Footer() {
                 <div className="font-heading uppercase text-paper text-[15px] tracking-[0.18em]">
                   {a.label}
                 </div>
-                <div className="flex items-start gap-3">
-                  <FontAwesomeIcon icon={faLocationDot} className="w-4 h-4 shrink-0 mt-1" />
-                  <span>{a.line}</span>
-                </div>
+                {a.line && (
+                  <div className="flex items-start gap-3">
+                    <FontAwesomeIcon icon={faLocationDot} className="w-4 h-4 shrink-0 mt-1" />
+                    <span>{a.line}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <FontAwesomeIcon icon={faPhone} className="w-4 h-4 shrink-0" />
                   <a
