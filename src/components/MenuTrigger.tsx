@@ -12,22 +12,22 @@ export default function MenuTrigger({
   dark?: boolean;
 }) {
   return (
-    <button
+    // The drawer carries its own close button, so this fades out while the
+    // menu is open — otherwise the hero shows two X icons at once, since
+    // there the trigger stacks above the drawer.
+    <motion.button
       className="relative z-[130] flex flex-col justify-center gap-2 w-8 h-8"
-      aria-label={open ? "Close menu" : "Open menu"}
+      aria-label="Open menu"
       aria-expanded={open}
+      aria-hidden={open}
+      tabIndex={open ? -1 : 0}
       onClick={onClick}
+      animate={{ opacity: open ? 0 : 1 }}
+      transition={{ duration: 0.2 }}
+      style={{ pointerEvents: open ? "none" : "auto" }}
     >
-      <motion.span
-        className={`w-8 h-0.5 block ${dark ? "bg-ink" : "bg-paper"}`}
-        animate={open ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-        transition={{ duration: 0.25 }}
-      />
-      <motion.span
-        className={`w-8 h-0.5 block ${dark ? "bg-ink" : "bg-paper"}`}
-        animate={open ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
-        transition={{ duration: 0.25 }}
-      />
-    </button>
+      <span className={`w-8 h-0.5 block ${dark ? "bg-ink" : "bg-paper"}`} />
+      <span className={`w-8 h-0.5 block ${dark ? "bg-ink" : "bg-paper"}`} />
+    </motion.button>
   );
 }
