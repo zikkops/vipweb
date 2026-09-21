@@ -8,11 +8,6 @@ import "@fontsource/hind/400.css";
 import "@fontsource/hind/500.css";
 import "@fontsource/hind/600.css";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Preloader from "@/components/Preloader";
-import MainWrapper from "@/components/MainWrapper";
-import ScrollToTop from "@/components/ScrollToTop";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -20,6 +15,8 @@ export const metadata: Metadata = {
   description: site.description,
 };
 
+// Shared shell only. The marketing chrome lives in (site)/layout.tsx so that
+// the internal dashboard does not inherit the header, footer and preloader.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,13 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-paper text-ink">
-        <Preloader />
-        <Header />
-        <MainWrapper>{children}</MainWrapper>
-        <Footer />
-        <ScrollToTop />
-      </body>
+      <body className="antialiased bg-paper text-ink">{children}</body>
     </html>
   );
 }
