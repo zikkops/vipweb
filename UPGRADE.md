@@ -203,16 +203,20 @@ The Asana question ("Board matches this table: yes/no, what you fixed") becomes 
 
 - [ ] **24. Recreate the schema in Supabase.**
   Tables as in Phase 4, with row-level security: employees can only read and write their own tasks, and admins can read everything. Test the security rules with two test users.
+  > **Status (2026-09-21): written and tested, not yet applied.** `supabase/migrations/20260921000000_dues.sql` has the tables, the sign-up trigger (company emails and the allow-list only; the first account becomes admin) and row-level security on every table. `npm run test:rls` runs it on real Postgres (PGlite) with Supabase Auth stubbed, and checks the rules with an admin and two employees (15 tests, part of `npm run check`). **Left to do (needs you):** create the Supabase project, run the migration there (`supabase db push`, or paste it into the SQL editor), then repeat the two-user check in the real project.
 
 - [ ] **25. Switch sign-in to Supabase Auth.**
   Use email confirmation, and allow only `@vipminds.com` addresses plus the ones listed in `EXTRA_ALLOWED_EMAILS`. Remove the local session code.
+  > **Blocked on task 24:** needs the project URL and anon key. The allow-list is already the `allowed_emails` table.
 
 - [ ] **26. Deploy the dashboard as its own app on a subdomain** (for example `team.vipminds.com`).
   The marketing site stays a static export on Hostinger and never includes the dashboard.
   Remove the `*.dev.tsx` split from the marketing repo once the dashboard lives elsewhere.
+  > **Blocked:** needs the Supabase project (24–25), a host for the dashboard app, and a DNS record for the subdomain.
 
 - [ ] **27. Backups and monitoring.**
   Turn on Supabase daily backups, test restoring once, and set up an alert when sign-in or save errors spike.
+  > **Blocked on task 24:** daily backups and alerts are settings in the Supabase project.
 
 ---
 

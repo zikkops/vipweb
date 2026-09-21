@@ -29,6 +29,7 @@ try {
   run("Typecheck", "npx tsc --noEmit");
   run("Lint", "npx eslint .");
   run("Tests", "npm test");
+  run("Database security (RLS) tests", "npm run test:rls");
   run("Build", "npx next build");
 } catch {
   process.exit(1);
