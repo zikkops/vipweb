@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import type { User } from "@/lib/dues";
-import { api, errorMessage } from "./api";
+import { changePassword, errorMessage } from "./db";
 import { useSession } from "./Session";
 import { BUTTON_SOLID, INPUT, LABEL } from "./ui";
 
-/** Change your own password. `forced` after an admin reset it. */
-export default function ChangePassword({ forced = false }: { forced?: boolean }) {
-  const { setUser } = useSession();
-  const [current, setCurrent] = useState("");
+const MIN_PASSWORD = 8;
+
+/** Set a new password. `recovering` after following a reset email. */
+export default function ChangePassword({ recovering = false }: { recovering?: boolean }) {
+  const { setRecovering } = useSession();
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
@@ -17,22 +17,22 @@ export default function ChangePassword({ forced = false }: { forced?: boolean })
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (next.length < MIN_PASSWORD) {
+      setMessage({ kind: "error", text: `Use at least ${MIN_PASSWORD} characters.` });
+      return;
+    }
     if (next !== confirm) {
-      setMessage({ kind: "error", text: "The new passwords don’t match." });
+      setMessage({ kind: "error", text: "The passwords don’t match." });
       return;
     }
     setBusy(true);
     setMessage(null);
     try {
-      const { user } = await api<{ user: User }>("auth/password/", {
-        method: "POST",
-        body: { currentPassword: current, newPassword: next },
-      });
-      setCurrent("");
+      await changePassword(next);
       setNext("");
       setConfirm("");
-      setMessage({ kind: "ok", text: "Password changed. Your other devices were signed out." });
-      setUser(user);
+      setMessage({ kind: "ok", text: "Password saved." });
+      setRecovering(false);
     } catch (err) {
       setMessage({ kind: "error", text: errorMessage(err) });
     } finally {
@@ -43,26 +43,8 @@ export default function ChangePassword({ forced = false }: { forced?: boolean })
   return (
     <form onSubmit={submit} className="max-w-md space-y-5 border border-hairline bg-paper p-6 sm:p-8">
       <div>
-        <h2 className="font-heading text-3xl">{forced ? "Choose a new password" : "Change password"}</h2>
-        {forced && (
-          <p className="mt-2 text-sm text-muted">
-            An admin reset your password. Enter the temporary one they gave you, then pick your own.
-          </p>
-        )}
-      </div>
-      <div>
-        <label className={LABEL} htmlFor="pw-current">
-          {forced ? "Temporary password" : "Current password"}
-        </label>
-        <input
-          id="pw-current"
-          type="password"
-          autoComplete="current-password"
-          required
-          className={INPUT}
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-        />
+        <h2 className="font-heading text-3xl">{recovering ? "Choose a new password" : "Change password"}</h2>
+        {recovering && <p className="mt-2 text-sm text-muted">You followed a password-reset link. Pick a new password to continue.</p>}
       </div>
       <div>
         <label className={LABEL} htmlFor="pw-new">
@@ -72,7 +54,7 @@ export default function ChangePassword({ forced = false }: { forced?: boolean })
           id="pw-new"
           type="password"
           autoComplete="new-password"
-          minLength={8}
+          minLength={MIN_PASSWORD}
           required
           className={INPUT}
           value={next}

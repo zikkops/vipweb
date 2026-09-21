@@ -96,7 +96,7 @@ export default function BoardTable({
 
 // ---- filters shared by the sheet and the calendar ---------------------------
 
-export type BoardFilter = { userId: number | null; brandId: number | null };
+export type BoardFilter = { userId: string | null; brandId: number | null };
 
 export function applyFilter(tasks: Task[], f: BoardFilter) {
   return tasks.filter((t) => (!f.userId || t.userId === f.userId) && (!f.brandId || t.brandId === f.brandId));
@@ -110,7 +110,7 @@ export function BoardFilters({
   onChange,
 }: {
   tasks: Task[];
-  people: { id: number; name: string }[];
+  people: { id: string; name: string }[];
   tags: Tags;
   filter: BoardFilter;
   onChange: (f: BoardFilter) => void;
@@ -129,7 +129,7 @@ export function BoardFilters({
           id="board-person"
           className={`${INPUT} w-auto min-w-44`}
           value={filter.userId ?? ""}
-          onChange={(e) => onChange({ ...filter, userId: e.target.value ? Number(e.target.value) : null })}
+          onChange={(e) => onChange({ ...filter, userId: e.target.value || null })}
         >
           <option value="">Everyone</option>
           {people.map((p) => (

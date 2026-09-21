@@ -1,22 +1,22 @@
-// Shared by the dashboard UI and the local test API.
+// Shared by the dashboard and its tests.
 
 export const COMPANY_DOMAIN = "vipminds.com";
 
 // Addresses outside the company domain that may still create an account.
+// The database enforces this too (public.allowed_emails); keep both in step.
 export const EXTRA_ALLOWED_EMAILS = ["mark.zakkak@gmail.com"];
 
 export type Role = "employee" | "admin";
 
 export type User = {
-  id: number;
+  /** Supabase Auth user id. */
+  id: string;
   email: string;
   name: string;
   role: Role;
   createdAt: string;
   /** Deactivated accounts can’t sign in; their tasks stay for the record. */
   active: boolean;
-  /** Set after an admin resets the password, until the person picks a new one. */
-  mustChangePassword: boolean;
 };
 
 export type TagKind = "brand" | "section";

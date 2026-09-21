@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { localToday } from "@/lib/dues";
 import { TASK_STATUSES, addDays, taskStatus, type Checkin, type Task, type TaskStatus } from "@/lib/tasks";
-import { api } from "./api";
+import { checkinsFor } from "./db";
 import BoardTable, { BoardFilters, applyFilter, type BoardFilter } from "./BoardTable";
 import { STATUS_STYLE, formatDay } from "./board";
 import { BUTTON, INPUT } from "./ui";
 import type { Tags } from "./useTags";
 
-type Person = { userId: number; name: string; checkin: Checkin | null };
+type Person = { userId: string; name: string; checkin: Checkin | null };
 
 /**
  * Everyone's tasks as they stood on one day, grouped
@@ -31,8 +31,8 @@ export default function DailySheet({
 
   useEffect(() => {
     let cancelled = false;
-    api<{ people: Person[] }>(`admin/checkins/?date=${date}`)
-      .then((r) => !cancelled && setPeople(r.people))
+    checkinsFor(date)
+      .then((people) => !cancelled && setPeople(people))
       .catch(() => !cancelled && setPeople([]));
     return () => {
       cancelled = true;

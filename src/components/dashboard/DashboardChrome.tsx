@@ -12,7 +12,7 @@ const NAV = [
 ];
 
 export default function DashboardChrome({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useSession();
+  const { user, recovering, logout } = useSession();
   const pathname = usePathname().replace(/\/?$/, "/");
 
   return (
@@ -60,8 +60,8 @@ export default function DashboardChrome({ children }: { children: React.ReactNod
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-        {/* After an admin reset, nothing else opens until a new password is chosen. */}
-        {user?.mustChangePassword ? <ChangePassword forced /> : children}
+        {/* After a password-reset link, nothing else opens until a new password is saved. */}
+        {user && recovering ? <ChangePassword recovering /> : children}
       </main>
     </div>
   );

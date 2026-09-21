@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { localToday } from "@/lib/dues";
 import type { Checkin } from "@/lib/tasks";
-import { api, errorMessage } from "../api";
+import { errorMessage, getCheckin, saveCheckin } from "../db";
 import { BUTTON, BUTTON_SOLID, INPUT, LABEL } from "../ui";
 
 /** Once a day: does the Asana board match my tasks? If not, what did I fix? */
@@ -17,8 +17,8 @@ export default function CheckinCard() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    api<{ checkin: Checkin | null }>(`checkins/?date=${today}`)
-      .then(({ checkin }) => setCheckin(checkin))
+    getCheckin(today)
+      .then(setCheckin)
       .catch((err) => setError(errorMessage(err)));
   }, [today]);
 
@@ -27,10 +27,7 @@ export default function CheckinCard() {
     setBusy(true);
     setError("");
     try {
-      const { checkin: saved } = await api<{ checkin: Checkin }>("checkins/", {
-        method: "PUT",
-        body: { date: today, asanaMatches: matches, asanaFixNote: note },
-      });
+      const saved = await saveCheckin(today, matches === true, note);
       setCheckin(saved);
       setEditing(false);
     } catch (err) {

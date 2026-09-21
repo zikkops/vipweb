@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { localToday } from "@/lib/dues";
 import type { Task } from "@/lib/tasks";
-import { api, errorMessage } from "../api";
+import { createTask, errorMessage } from "../db";
 import Combobox from "../Combobox";
 import { BUTTON_SOLID, INPUT, LABEL } from "../ui";
 import type { Tags } from "../useTags";
@@ -31,10 +31,7 @@ export default function QuickAdd({ tags, onAdded }: { tags: Tags; onAdded: (task
     setBusy(true);
     setError("");
     try {
-      const { task } = await api<{ task: Task }>("tasks/", {
-        method: "POST",
-        body: { brandId, sectionId, title, dueDate: dueDate || null, today },
-      });
+      const task = await createTask(tags, { brandId, sectionId, title, dueDate: dueDate || null, today });
       onAdded(task);
       // Keep brand and section: people usually add several tasks for one job.
       setTitle("");

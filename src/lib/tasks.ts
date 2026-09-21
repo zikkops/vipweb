@@ -28,7 +28,7 @@ export type TaskBlock = {
 
 export type Task = {
   id: number;
-  userId: number;
+  userId: string;
   userName: string;
   brandId: number;
   sectionId: number;

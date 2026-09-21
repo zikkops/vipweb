@@ -11,7 +11,7 @@ import {
   type Task,
   type TaskEvent,
 } from "@/lib/tasks";
-import { api, errorMessage } from "../api";
+import { errorMessage, getTaskWithEvents, taskAction, taskEvents, updateTask, type TaskAction } from "../db";
 import { STATUS_STYLE, formatDay } from "../board";
 import Combobox from "../Combobox";
 import { BUTTON, BUTTON_SOLID, INPUT, LABEL } from "../ui";
@@ -48,7 +48,7 @@ export default function TaskPanel({
 
   useEffect(() => {
     let cancelled = false;
-    api<{ task: Task; events: TaskEvent[] }>(`tasks/${taskId}/`)
+    getTaskWithEvents(taskId)
       .then((r) => {
         if (cancelled) return;
         setTask(r.task);
@@ -66,14 +66,13 @@ export default function TaskPanel({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  async function run(request: () => Promise<{ task: Task }>) {
+  async function run(request: () => Promise<Task>) {
     setBusy(true);
     setError("");
     try {
-      const { task: updated } = await request();
-      const history = await api<{ task: Task; events: TaskEvent[] }>(`tasks/${taskId}/`);
+      const updated = await request();
       setTask(updated);
-      setEvents(history.events);
+      setEvents(await taskEvents(taskId));
       setMode("view");
       onChanged(updated);
     } catch (err) {
@@ -83,8 +82,7 @@ export default function TaskPanel({
     }
   }
 
-  const act = (action: string, extra: Record<string, unknown> = {}) =>
-    run(() => api<{ task: Task }>(`tasks/${taskId}/`, { method: "POST", body: { action, today, ...extra } }));
+  const act = (action: TaskAction) => task && run(() => taskAction(task, action, today));
 
   const status = task ? taskStatus(task, today) : null;
   const block = task ? activeBlock(task, today) : null;
@@ -152,7 +150,7 @@ export default function TaskPanel({
                       className="size-5 accent-accent"
                       disabled={busy}
                       checked={false}
-                      onChange={() => act("receive")}
+                      onChange={() => act({ action: "receive" })}
                     />
                     Received{block.waitingOn && <> — {block.waitingOn} came through</>}, unblock it
                   </label>
@@ -165,12 +163,12 @@ export default function TaskPanel({
             {editable && mode === "view" && (
               <div className="flex flex-wrap gap-3">
                 {status === "done" ? (
-                  <button className={BUTTON} disabled={busy} onClick={() => act("reopen")}>
+                  <button className={BUTTON} disabled={busy} onClick={() => act({ action: "reopen" })}>
                     Reopen
                   </button>
                 ) : (
                   <>
-                    <button className={BUTTON_SOLID} disabled={busy} onClick={() => act("done")}>
+                    <button className={BUTTON_SOLID} disabled={busy} onClick={() => act({ action: "done" })}>
                       Mark done
                     </button>
                     {!task.blocks.some((b) => b.receivedOn === null) && (
@@ -187,7 +185,7 @@ export default function TaskPanel({
             )}
 
             {mode === "block" && (
-              <BlockForm busy={busy} today={today} onCancel={() => setMode("view")} onSubmit={(b) => act("block", b)} />
+              <BlockForm busy={busy} today={today} onCancel={() => setMode("view")} onSubmit={(b) => act({ action: "block", ...b })} />
             )}
 
             {mode === "edit" && (
@@ -198,7 +196,7 @@ export default function TaskPanel({
                 busy={busy}
                 onCancel={() => setMode("view")}
                 onSubmit={(body) =>
-                  run(() => api<{ task: Task }>(`tasks/${taskId}/`, { method: "PATCH", body: { ...body, today } }))
+                  run(() => updateTask(tags, task, body, today))
                 }
               />
             )}
@@ -302,7 +300,7 @@ function EditForm({
   today: string;
   busy: boolean;
   onCancel: () => void;
-  onSubmit: (body: Record<string, unknown>) => void;
+  onSubmit: (body: { brandId: number; sectionId: number; title: string; dueDate: string | null; reason?: string }) => void;
 }) {
   const [brandId, setBrandId] = useState(task.brandId);
   const [sectionId, setSectionId] = useState(task.sectionId);

@@ -20,7 +20,7 @@ export default function DueCalendar({
   onOpen,
 }: {
   tasks: Task[];
-  people: { id: number; name: string }[];
+  people: { id: string; name: string }[];
   tags: Tags;
   onOpen: (task: Task) => void;
 }) {

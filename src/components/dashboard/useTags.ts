@@ -1,10 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { Tag } from "@/lib/dues";
-import { api, errorMessage } from "./api";
+import { errorMessage, listTags, type Tags } from "./db";
 
-export type Tags = { brands: Tag[]; sections: Tag[] };
+export type { Tags };
 
 export function useTags() {
   const [tags, setTags] = useState<Tags | null>(null);
@@ -12,7 +11,7 @@ export function useTags() {
 
   const reload = useCallback(async () => {
     try {
-      setTags(await api<Tags>("tags/"));
+      setTags(await listTags());
       setError("");
     } catch (err) {
       setError(errorMessage(err));

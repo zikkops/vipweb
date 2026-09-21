@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api, errorMessage } from "@/components/dashboard/api";
+import { createTag, errorMessage, listUsers, sendPasswordReset, updateTag, updateUser } from "@/components/dashboard/db";
 import DailySheet from "@/components/dashboard/DailySheet";
 import DueCalendar from "@/components/dashboard/DueCalendar";
 import { useSession, useUser } from "@/components/dashboard/Session";
@@ -134,7 +134,7 @@ function TagManager({
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
-    const added = await run(() => api("tags/", { method: "POST", body: { kind, name, code } }));
+    const added = await run(() => createTag(kind, name, code));
     if (added) {
       setName("");
       setCode("");
@@ -142,7 +142,7 @@ function TagManager({
   }
 
   const patch = (tag: Tag, body: Partial<Pick<Tag, "name" | "code" | "active">>) =>
-    run(() => api(`tags/${kind}/${tag.id}/`, { method: "PATCH", body }));
+    run(() => updateTag(kind, tag.id, body));
 
   const q = filter.trim().toLowerCase();
   const visible = tags.filter(
@@ -285,11 +285,11 @@ function PeopleTab({ me }: { me: User }) {
   const { refresh } = useSession();
   const [users, setUsers] = useState<User[] | null>(null);
   const [error, setError] = useState("");
-  const [issued, setIssued] = useState<{ name: string; email: string; password: string } | null>(null);
+  const [notice, setNotice] = useState("");
 
   const load = useCallback(async () => {
     try {
-      setUsers((await api<{ users: User[] }>("admin/users/")).users);
+      setUsers(await listUsers());
     } catch (err) {
       setError(errorMessage(err));
     }
@@ -300,10 +300,11 @@ function PeopleTab({ me }: { me: User }) {
     load();
   }, [load]);
 
-  async function update(user: User, body: Record<string, unknown>) {
+  async function update(user: User, body: { role?: User["role"]; active?: boolean }) {
     setError("");
+    setNotice("");
     try {
-      await api(`admin/users/${user.id}/`, { method: "PATCH", body });
+      await updateUser(user.id, body);
       await load();
       // Changing your own role takes effect in this tab straight away.
       if (user.id === me.id) await refresh();
@@ -313,15 +314,11 @@ function PeopleTab({ me }: { me: User }) {
   }
 
   async function resetPassword(user: User) {
-    if (!confirm(`Reset ${user.name}'s password? They'll be signed out and must choose a new one.`)) return;
     setError("");
+    setNotice("");
     try {
-      const { temporaryPassword } = await api<{ temporaryPassword: string }>(`admin/users/${user.id}/`, {
-        method: "POST",
-        body: { action: "reset-password" },
-      });
-      setIssued({ name: user.name, email: user.email, password: temporaryPassword });
-      await load();
+      await sendPasswordReset(user.email);
+      setNotice(`Password reset link sent to ${user.email}.`);
     } catch (err) {
       setError(errorMessage(err));
     }
@@ -333,23 +330,7 @@ function PeopleTab({ me }: { me: User }) {
     <div>
       {error && <p className="mb-4 text-sm text-brand-coral">{error}</p>}
 
-      {issued && (
-        <div className="mb-6 flex flex-wrap items-start justify-between gap-4 border border-accent/30 bg-accent/5 p-5">
-          <div className="text-sm">
-            <p className="font-heading text-lg">Temporary password for {issued.name}</p>
-            <p className="mt-2">
-              <code className="select-all bg-paper px-2 py-1 font-mono text-base">{issued.password}</code>
-            </p>
-            <p className="mt-2 text-muted">
-              Give it to them in person or by phone. They sign in as {issued.email} with it and must pick a new
-              password. It won’t be shown again.
-            </p>
-          </div>
-          <button className={BUTTON} onClick={() => setIssued(null)}>
-            Done
-          </button>
-        </div>
-      )}
+      {notice && <p className="mb-4 text-sm text-accent">{notice}</p>}
 
       <div className="overflow-x-auto border border-hairline bg-paper">
         <table className="w-full min-w-[760px] border-collapse text-left text-sm">
@@ -371,19 +352,16 @@ function PeopleTab({ me }: { me: User }) {
                     {u.name}
                     {self && <span className="ml-2 text-muted">(you)</span>}
                     {!u.active && <span className="ml-2 text-brand-coral">deactivated</span>}
-                    {u.active && u.mustChangePassword && (
-                      <span className="ml-2 text-muted">· waiting for a new password</span>
-                    )}
                   </td>
                   <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3 text-muted">{new Date(`${u.createdAt.replace(" ", "T")}Z`).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-muted">{new Date(u.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <select
                       aria-label={`Role for ${u.name}`}
                       className={`${INPUT} w-auto`}
                       value={u.role}
                       disabled={!u.active}
-                      onChange={(e) => update(u, { role: e.target.value })}
+                      onChange={(e) => update(u, { role: e.target.value as User["role"] })}
                     >
                       <option value="employee">Employee</option>
                       <option value="admin">Admin</option>
@@ -394,7 +372,7 @@ function PeopleTab({ me }: { me: User }) {
                       <span className="flex gap-4">
                         {u.active && (
                           <button className="text-muted hover:text-accent" onClick={() => resetPassword(u)}>
-                            Reset password
+                            Send password reset
                           </button>
                         )}
                         <button

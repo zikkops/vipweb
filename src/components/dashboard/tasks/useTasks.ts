@@ -2,16 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Task } from "@/lib/tasks";
-import { api, errorMessage } from "../api";
+import { errorMessage, listTasks } from "../db";
 
-/** My tasks, or everyone's (`all`, admins only). */
+/** My tasks, or everyone's (`all`, admins only — the database enforces it). */
 export function useTasks(all = false) {
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [error, setError] = useState("");
 
   const reload = useCallback(async () => {
     try {
-      setTasks((await api<{ tasks: Task[] }>(all ? "tasks/?all=1" : "tasks/")).tasks);
+      setTasks(await listTasks(all));
       setError("");
     } catch (err) {
       setError(errorMessage(err));
@@ -23,7 +23,7 @@ export function useTasks(all = false) {
     reload();
   }, [reload]);
 
-  /** Swap in a task the API just returned, without refetching everything. */
+  /** Swap in a task just saved, without refetching everything. */
   const replace = useCallback((task: Task) => {
     setTasks((list) => {
       if (!list) return [task];
