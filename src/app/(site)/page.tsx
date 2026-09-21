@@ -45,14 +45,16 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* Stats */}
-      <section className="bg-surface py-20 md:py-28">
-        <div className="container-page grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((s) => (
-            <StatBlock key={s.label} label={s.label} value={s.value} />
-          ))}
-        </div>
-      </section>
+      {/* Stats — hidden until real figures are filled in (src/data/stats.ts) */}
+      {stats.length > 0 && (
+        <section className="bg-surface py-20 md:py-28">
+          <div className="container-page grid grid-cols-2 md:grid-cols-4 gap-4">
+            {stats.map((s) => (
+              <StatBlock key={s.label} label={s.label} value={s.value} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Clients — wider than the page container so the logos get real room */}
       <section className="bg-paper py-16">

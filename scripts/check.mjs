@@ -6,7 +6,7 @@ import { execSync } from "node:child_process";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
-const EXPECTED_PAGES = 25;
+const EXPECTED_PAGES = 4; // home, 404 (two copies) and _not-found
 const FORBIDDEN = ["dashboard", "api"];
 const OUT = "out";
 

@@ -23,12 +23,6 @@ export const site = {
       phone: "+961 3 373882",
     },
   ],
-  socials: [
-    { label: "Instagram", href: "https://instagram.com" },
-    { label: "Twitter", href: "https://twitter.com" },
-    { label: "Behance", href: "https://behance.net" },
-    { label: "Facebook", href: "https://facebook.com" },
-  ],
 };
 
 export const nav = [

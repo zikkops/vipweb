@@ -1,10 +1,3 @@
-export const processSteps = [
-  { title: "Discover", description: "We start by understanding your business, your audience, and where the current brand or product is falling short." },
-  { title: "Define", description: "Strategy, positioning, and scope get locked in before any design work starts, so everyone is aligned on what we're building." },
-  { title: "Design & Build", description: "Our designers and engineers work in tight loops, testing ideas early and often rather than disappearing for weeks." },
-  { title: "Launch & Grow", description: "We ship, measure what's working, and keep iterating — most of our client relationships continue well past the first launch." },
-];
-
 export const workAccordion = [
   {
     title: "The Way We Work",

@@ -1,6 +1,3 @@
-export const stats = [
-  { label: "Employees", value: 42 },
-  { label: "Designers", value: 18 },
-  { label: "Projects", value: 260 },
-  { label: "Happy Clients", value: 120 },
-];
+// Company figures shown on the home page. The section stays hidden while this
+// list is empty, so add real numbers here, e.g. { label: "Projects", value: 260 }.
+export const stats: { label: string; value: number }[] = [];

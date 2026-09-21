@@ -7,11 +7,10 @@ Tasks are ordered by risk, safest first: do them top to bottom, and commit after
 **Before and after every task, run:**
 
 ```bash
-npx tsc --noEmit && npx eslint . && npm run build
+npm run check
 ```
 
-The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboard` or `out/api`.
-(Task 2 turns this into one command.)
+It typechecks, lints and builds, then confirms `out/` holds only the public pages (4 since task 12: home, two 404 copies, `_not-found`) and **no** `out/dashboard` or `out/api`.
 
 ---
 
@@ -85,6 +84,7 @@ The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboa
 ## Phase 3 — Website content (each needs input from you)
 
 - [ ] **11. Make the contact forms actually send.**
+  > **Status (2026-09-21): code done, waiting on a form service.** The contact and newsletter forms post JSON to `NEXT_PUBLIC_FORM_ENDPOINT` (set it in Hostinger’s build environment), show a real error when that fails, and have a honeypot. With no endpoint set they open the visitor’s email app addressed to `marketing@vipminds.com` instead of pretending to send. Tested against a local mock endpoint (delivered, error, fallback). **Left to do:** create the Formspree/Web3Forms form (or PHP mailer), set the variable, redeploy, send a test message.
   The site is static, so it needs a form service. Two options:
   - a hosted endpoint such as Formspree or Web3Forms (a free tier is enough)
   - a small PHP mailer on Hostinger
@@ -93,7 +93,7 @@ The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboa
   **Needs:** your choice of service.
   *Done when:* a test message arrives in the inbox.
 
-- [ ] **12. Replace the placeholder stats and social links, and decide what happens to the inner pages.**
+- [x] **12. Replace the placeholder stats and social links, and decide what happens to the inner pages.**
   **Needs:**
   - real numbers for the stats
   - real Instagram, Behance and LinkedIn URLs (or remove the socials)
@@ -101,6 +101,7 @@ The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboa
 
   If they stay, mark them `noindex` until they have real content.
   *Done when:* no template text or placeholder numbers are publicly reachable.
+  > **Done 2026-09-21:** the stats section is hidden until real figures go in `src/data/stats.ts`; the unused placeholder socials are gone; `/about`, `/blog`, `/team`, `/services`, `/portfolio` and the duplicate `/contact` page were deleted with everything only they used (restore from git history if wanted; unused images and videos are archived in `../vipweb-archive/`).
 
 ## Phase 4 — Dashboard: tasks instead of daily reports (your task list)
 
