@@ -10,7 +10,7 @@ import { clients } from "@/data/clients";
 const DB_DIR = path.join(process.cwd(), "data");
 const DB_FILE = path.join(DB_DIR, "dues.sqlite");
 
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 function migrate(db: DatabaseSync) {
   const { user_version } = db.prepare("PRAGMA user_version").get() as { user_version: number };
@@ -31,6 +31,13 @@ function migrate(db: DatabaseSync) {
       db.exec("ROLLBACK");
       throw err;
     }
+  }
+  // v5: accounts can be deactivated, and an admin-issued password must be changed.
+  if (user_version < 5) {
+    db.exec(`
+      ALTER TABLE users ADD COLUMN active INTEGER NOT NULL DEFAULT 1;
+      ALTER TABLE users ADD COLUMN must_change_password INTEGER NOT NULL DEFAULT 0;
+    `);
   }
 
   db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);

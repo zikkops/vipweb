@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ChangePassword from "./ChangePassword";
 import { useSession } from "./Session";
 
 const NAV = [
@@ -39,10 +40,14 @@ export default function DashboardChrome({ children }: { children: React.ReactNod
                 ))}
               </nav>
               <div className="ml-auto flex items-center gap-4 text-sm">
-                <span className="hidden text-muted sm:inline">
+                <Link
+                  href="/dashboard/account/"
+                  className={`hidden sm:inline ${pathname === "/dashboard/account/" ? "text-accent" : "text-muted hover:text-accent"}`}
+                  title="Your account"
+                >
                   {user.name}
                   {user.role === "admin" && <span className="ml-2 text-accent">admin</span>}
-                </span>
+                </Link>
                 <button
                   onClick={logout}
                   className="font-heading text-sm uppercase tracking-widest text-ink hover:text-accent"
@@ -54,7 +59,10 @@ export default function DashboardChrome({ children }: { children: React.ReactNod
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+        {/* After an admin reset, nothing else opens until a new password is chosen. */}
+        {user?.mustChangePassword ? <ChangePassword forced /> : children}
+      </main>
     </div>
   );
 }

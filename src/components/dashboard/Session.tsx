@@ -8,6 +8,8 @@ import { api } from "./api";
 type SessionValue = {
   user: User | null;
   setUser: (user: User | null) => void;
+  /** Re-reads the signed-in user, e.g. after an admin changed your role. */
+  refresh: () => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -28,6 +30,9 @@ export function useUser(): User {
 
 export const LOGIN_PATH = "/dashboard/login/";
 
+/** How often an open tab re-checks the session (role changes, deactivation). */
+const REVALIDATE_MS = 60_000;
+
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -35,19 +40,26 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const onLogin = pathname.replace(/\/?$/, "/") === LOGIN_PATH;
 
-  useEffect(() => {
-    let cancelled = false;
-    api<{ user: User | null }>("auth/me/")
-      .catch(() => ({ user: null }))
-      .then(({ user }) => {
-        if (cancelled) return;
-        setUser(user);
-        setLoaded(true);
-      });
-    return () => {
-      cancelled = true;
-    };
+  const refresh = useCallback(async () => {
+    const { user } = await api<{ user: User | null }>("auth/me/").catch(() => ({ user: null }));
+    setUser(user);
+    setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial session check
+    refresh();
+    // Pick up role changes or a deactivated account without a reload.
+    const onFocus = () => document.visibilityState === "visible" && refresh();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    const timer = setInterval(refresh, REVALIDATE_MS);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+      clearInterval(timer);
+    };
+  }, [refresh]);
 
   useEffect(() => {
     if (!loaded) return;
@@ -63,7 +75,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const ready = loaded && (onLogin ? !user : !!user);
 
   return (
-    <SessionContext.Provider value={{ user, setUser, logout }}>
+    <SessionContext.Provider value={{ user, setUser, refresh, logout }}>
       {ready ? children : <p className="py-24 text-center text-sm text-muted">Loading…</p>}
     </SessionContext.Provider>
   );

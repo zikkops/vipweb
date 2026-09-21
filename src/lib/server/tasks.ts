@@ -340,7 +340,7 @@ export function saveCheckin(userId: number, body: Record<string, unknown>): Chec
 
 /** Everyone, with their check-in for `date` (null if they haven't). */
 export function checkinsFor(date: string) {
-  const users = getDb().prepare("SELECT id, name FROM users ORDER BY name COLLATE NOCASE").all() as {
+  const users = getDb().prepare("SELECT id, name FROM users WHERE active = 1 ORDER BY name COLLATE NOCASE").all() as {
     id: number;
     name: string;
   }[];

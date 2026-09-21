@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/components/dashboard/api";
 import DailySheet from "@/components/dashboard/DailySheet";
 import DueCalendar from "@/components/dashboard/DueCalendar";
-import { useUser } from "@/components/dashboard/Session";
+import { useSession, useUser } from "@/components/dashboard/Session";
 import TaskPanel from "@/components/dashboard/tasks/TaskPanel";
 import { useTasks } from "@/components/dashboard/tasks/useTasks";
 import { BUTTON, BUTTON_SOLID, INPUT, LABEL, PAGE_TITLE } from "@/components/dashboard/ui";
@@ -282,8 +282,10 @@ function TagRow({
 // ---- people ----------------------------------------------------------------
 
 function PeopleTab({ me }: { me: User }) {
+  const { refresh } = useSession();
   const [users, setUsers] = useState<User[] | null>(null);
   const [error, setError] = useState("");
+  const [issued, setIssued] = useState<{ name: string; email: string; password: string } | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -298,10 +300,27 @@ function PeopleTab({ me }: { me: User }) {
     load();
   }, [load]);
 
-  async function setRole(user: User, role: User["role"]) {
+  async function update(user: User, body: Record<string, unknown>) {
     setError("");
     try {
-      await api(`admin/users/${user.id}/`, { method: "PATCH", body: { role } });
+      await api(`admin/users/${user.id}/`, { method: "PATCH", body });
+      await load();
+      // Changing your own role takes effect in this tab straight away.
+      if (user.id === me.id) await refresh();
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }
+
+  async function resetPassword(user: User) {
+    if (!confirm(`Reset ${user.name}'s password? They'll be signed out and must choose a new one.`)) return;
+    setError("");
+    try {
+      const { temporaryPassword } = await api<{ temporaryPassword: string }>(`admin/users/${user.id}/`, {
+        method: "POST",
+        body: { action: "reset-password" },
+      });
+      setIssued({ name: user.name, email: user.email, password: temporaryPassword });
       await load();
     } catch (err) {
       setError(errorMessage(err));
@@ -313,38 +332,86 @@ function PeopleTab({ me }: { me: User }) {
   return (
     <div>
       {error && <p className="mb-4 text-sm text-brand-coral">{error}</p>}
+
+      {issued && (
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4 border border-accent/30 bg-accent/5 p-5">
+          <div className="text-sm">
+            <p className="font-heading text-lg">Temporary password for {issued.name}</p>
+            <p className="mt-2">
+              <code className="select-all bg-paper px-2 py-1 font-mono text-base">{issued.password}</code>
+            </p>
+            <p className="mt-2 text-muted">
+              Give it to them in person or by phone. They sign in as {issued.email} with it and must pick a new
+              password. It won’t be shown again.
+            </p>
+          </div>
+          <button className={BUTTON} onClick={() => setIssued(null)}>
+            Done
+          </button>
+        </div>
+      )}
+
       <div className="overflow-x-auto border border-hairline bg-paper">
-        <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[760px] border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-hairline font-heading text-xs uppercase tracking-widest text-muted">
               <th className="px-4 py-3 font-normal">Name</th>
               <th className="px-4 py-3 font-normal">Email</th>
               <th className="px-4 py-3 font-normal">Joined</th>
               <th className="px-4 py-3 font-normal">Role</th>
+              <th className="px-4 py-3 font-normal">Account</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
-              <tr key={u.id} className="border-b border-hairline last:border-0">
-                <td className="px-4 py-3">
-                  {u.name}
-                  {u.id === me.id && <span className="ml-2 text-muted">(you)</span>}
-                </td>
-                <td className="px-4 py-3">{u.email}</td>
-                <td className="px-4 py-3 text-muted">{new Date(`${u.createdAt}Z`).toLocaleDateString()}</td>
-                <td className="px-4 py-3">
-                  <select
-                    aria-label={`Role for ${u.name}`}
-                    className={`${INPUT} w-auto`}
-                    value={u.role}
-                    onChange={(e) => setRole(u, e.target.value as User["role"])}
-                  >
-                    <option value="employee">Employee</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {users.map((u) => {
+              const self = u.id === me.id;
+              return (
+                <tr key={u.id} className={`border-b border-hairline last:border-0 ${u.active ? "" : "text-muted-light"}`}>
+                  <td className="px-4 py-3">
+                    {u.name}
+                    {self && <span className="ml-2 text-muted">(you)</span>}
+                    {!u.active && <span className="ml-2 text-brand-coral">deactivated</span>}
+                    {u.active && u.mustChangePassword && (
+                      <span className="ml-2 text-muted">· waiting for a new password</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">{u.email}</td>
+                  <td className="px-4 py-3 text-muted">{new Date(`${u.createdAt.replace(" ", "T")}Z`).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      aria-label={`Role for ${u.name}`}
+                      className={`${INPUT} w-auto`}
+                      value={u.role}
+                      disabled={!u.active}
+                      onChange={(e) => update(u, { role: e.target.value })}
+                    >
+                      <option value="employee">Employee</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {!self && (
+                      <span className="flex gap-4">
+                        {u.active && (
+                          <button className="text-muted hover:text-accent" onClick={() => resetPassword(u)}>
+                            Reset password
+                          </button>
+                        )}
+                        <button
+                          className="text-muted hover:text-accent"
+                          onClick={() => {
+                            if (u.active && !confirm(`Deactivate ${u.name}? They'll be signed out and can't sign in.`)) return;
+                            update(u, { active: !u.active });
+                          }}
+                        >
+                          {u.active ? "Deactivate" : "Reactivate"}
+                        </button>
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

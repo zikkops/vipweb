@@ -42,16 +42,43 @@ export function checkPasswordOrDummy(password: string, stored: string | undefine
 
 const sha256 = (value: string) => createHash("sha256").update(value).digest("hex");
 
-type UserRow = {
+export type UserRow = {
   id: number;
   email: string;
   name: string;
   role: Role;
   created_at: string;
+  active: number;
+  must_change_password: number;
 };
 
+/** Columns for a UserRow, from the `users` table aliased as `u`. */
+export const USER_COLUMNS = "u.id, u.email, u.name, u.role, u.created_at, u.active, u.must_change_password";
+
 export function toUser(row: UserRow): User {
-  return { id: row.id, email: row.email, name: row.name, role: row.role, createdAt: row.created_at };
+  return {
+    id: row.id,
+    email: row.email,
+    name: row.name,
+    role: row.role,
+    createdAt: row.created_at,
+    active: row.active === 1,
+    mustChangePassword: row.must_change_password === 1,
+  };
+}
+
+/** Signs someone out everywhere, optionally keeping the session they’re using. */
+export async function endOtherSessions(userId: number, keepCurrent: boolean) {
+  const token = keepCurrent ? (await cookies()).get(SESSION_COOKIE)?.value : undefined;
+  getDb()
+    .prepare("DELETE FROM sessions WHERE user_id = ? AND token_hash != ?")
+    .run(userId, token ? sha256(token) : "");
+}
+
+export const MIN_PASSWORD = 8;
+
+export function checkNewPassword(password: string) {
+  if (password.length < MIN_PASSWORD) throw new HttpError(400, `Password must be at least ${MIN_PASSWORD} characters.`);
 }
 
 export async function startSession(userId: number) {
@@ -87,18 +114,20 @@ export async function currentUser(): Promise<User | null> {
 
   const row = db
     .prepare(
-      `SELECT u.id, u.email, u.name, u.role, u.created_at
+      `SELECT ${USER_COLUMNS}
          FROM sessions s JOIN users u ON u.id = s.user_id
-        WHERE s.token_hash = ?`
+        WHERE s.token_hash = ? AND u.active = 1`
     )
     .get(sha256(token)) as UserRow | undefined;
 
   return row ? toUser(row) : null;
 }
 
-export async function requireUser(): Promise<User> {
+/** A signed-in user; with `allowPendingPassword` also one who must still replace an admin-issued password. */
+export async function requireUser({ allowPendingPassword = false } = {}): Promise<User> {
   const user = await currentUser();
   if (!user) throw new HttpError(401, "Please sign in.");
+  if (user.mustChangePassword && !allowPendingPassword) throw new HttpError(403, "Choose a new password first.");
   return user;
 }
 

@@ -1,7 +1,8 @@
 import { COMPANY_DOMAIN, isAllowedEmail } from "@/lib/dues";
-import { hashPassword, startSession, toUser } from "@/lib/server/auth";
+import { checkNewPassword, hashPassword, startSession, toUser, type UserRow } from "@/lib/server/auth";
 import { transaction } from "@/lib/server/db";
 import { handle, HttpError, ok, readJson, str } from "@/lib/server/http";
+import { assertAllowed, clientIp, recordFailure, SIGNUP_WINDOW } from "@/lib/server/rateLimit";
 
 export const POST = handle(async (req: Request) => {
   const body = await readJson(req);
@@ -9,10 +10,13 @@ export const POST = handle(async (req: Request) => {
   const email = str(body.email, "Email", { max: 254 }).toLowerCase();
   const password = str(body.password, "Password", { max: 200 });
 
+  const ipKey = `signup:ip:${clientIp(req)}`;
+  assertAllowed([ipKey], SIGNUP_WINDOW);
+
   if (!/^[^\s@]+@[^\s@]+$/.test(email) || !isAllowedEmail(email)) {
     throw new HttpError(400, `Use your @${COMPANY_DOMAIN} email address.`);
   }
-  if (password.length < 8) throw new HttpError(400, "Password must be at least 8 characters.");
+  checkNewPassword(password);
 
   const user = transaction((db) => {
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email)) {
@@ -23,11 +27,13 @@ export const POST = handle(async (req: Request) => {
     return db
       .prepare(
         `INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)
-         RETURNING id, email, name, role, created_at`
+         RETURNING id, email, name, role, created_at, active, must_change_password`
       )
-      .get(email, name, hashPassword(password), n === 0 ? "admin" : "employee") as Parameters<typeof toUser>[0];
+      .get(email, name, hashPassword(password), n === 0 ? "admin" : "employee") as UserRow;
   });
 
+  // Each account created counts toward the limit, so one address can't mass-create accounts.
+  recordFailure([ipKey]);
   await startSession(user.id);
   return ok({ user: toUser(user) }, 201);
 });

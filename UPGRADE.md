@@ -194,11 +194,12 @@ The Asana question ("Board matches this table: yes/no, what you fixed") becomes 
 
 ## Phase 5 — Going online (highest risk, do last)
 
-- [ ] **23. Harden sign-in before exposing anything.**
+- [x] **23. Harden sign-in before exposing anything.**
   - Rate-limit logins (for example 5 attempts per 15 minutes per email and per IP).
   - Add a password reset (it can be admin-issued at first).
   - Let admins deactivate an account (a person who leaves the company).
   - Show when an admin's own role changed without needing a reload.
+  > **Done 2026-09-21:** 5 failed sign-ins per 15 min per email and per IP (an admin reset lifts an account’s lockout), 5 sign-ups per hour per IP. Admins can reset a password (a one-time temporary password, and the person must choose a new one before anything else works), deactivate or reactivate accounts (signed out at once; the last active admin is protected), and role changes reach open tabs on focus or within a minute. Everyone has an Account page to change their password.
 
 - [ ] **24. Recreate the schema in Supabase.**
   Tables as in Phase 4, with row-level security: employees can only read and write their own tasks, and admins can read everything. Test the security rules with two test users.

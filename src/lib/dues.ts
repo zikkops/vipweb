@@ -13,6 +13,10 @@ export type User = {
   name: string;
   role: Role;
   createdAt: string;
+  /** Deactivated accounts can’t sign in; their tasks stay for the record. */
+  active: boolean;
+  /** Set after an admin resets the password, until the person picks a new one. */
+  mustChangePassword: boolean;
 };
 
 export type TagKind = "brand" | "section";
