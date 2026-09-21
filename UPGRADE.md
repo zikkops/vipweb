@@ -65,21 +65,21 @@ The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboa
 
 ## Phase 2 — Dependency patches
 
-- [ ] **7. Upgrade Next 16.2.12 → 16.3.x and `eslint-config-next` to match.**
+- [x] **7. Upgrade Next 16.2.12 → 16.3.x and `eslint-config-next` to match.**
   This closes the critical advisories. Keep the version pinned exactly, the way `package.json` already does.
   Re-test: the home page, the mobile menu, the static export page count, and the dashboard under `next dev` (sign in, save).
   *Done when:* `npm audit` no longer lists `next`.
 
-- [ ] **8. Run `npm audit fix` (not `--force`).**
+- [x] **8. Run `npm audit fix` (not `--force`).**
   This patches the dev-only tools `brace-expansion`, `js-yaml` and `nanoid`.
   Then run `npm audit` again. If `sharp` or `postcss` are still flagged, check whether they only come in through Next, and take the fix Next ships rather than forcing it.
   *Done when:* only the findings you've written down as accepted remain.
 
-- [ ] **9. Upgrade React 19.2 → 19.3, plus `@types/react` and `@types/react-dom`.**
+- [x] **9. Upgrade React 19.2 → 19.3, plus `@types/react` and `@types/react-dom`.**
   This is a minor version bump.
   *Done when:* `npm run check` passes, and the preloader, menu and lightbox all still work.
 
-- [ ] **10. Bump `@types/node` to the latest 22.x patch.**
+- [x] **10. Bump `@types/node` to the latest 22.x patch.**
   Stay on 22, which matches Hostinger.
 
 ## Phase 3 — Website content (each needs input from you)
