@@ -88,6 +88,16 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Dashboard: highlight a job code that just changed. */
+@keyframes job-code-flash {
+  0% {
+    background-color: var(--color-brand-mint);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 @keyframes color-blink {
   0% {
     color: var(--color-brand-mint);

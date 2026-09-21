@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "./Session";
 
 const NAV = [
-  { href: "/dashboard/", label: "Report" },
-  { href: "/dashboard/history/", label: "History" },
+  { href: "/dashboard/", label: "My tasks" },
   { href: "/dashboard/admin/", label: "Admin", admin: true },
 ];
 

@@ -126,7 +126,7 @@ Every change (created, due date moved, blocked, received, done, reopened) is wri
 
 The Asana question ("Board matches this table: yes/no, what you fixed") becomes a short daily check-in, separate from tasks.
 
-- [ ] **13. Add the new tables next to the old ones (schema v3). Nothing is deleted yet.**
+- [x] **13. Add the new tables next to the old ones (schema v3). Nothing is deleted yet.**
   - `tasks`: id, user_id, brand_id, section_id, title, due_date, job_code, done_at, created_at, updated_at
   - `task_blocks`: id, task_id, reason, waiting_on, blocked_on (date), received_at (null until ticked)
   - `task_events`: id, task_id, user_id, type, from/to values, note, at
@@ -134,25 +134,25 @@ The Asana question ("Board matches this table: yes/no, what you fixed") becomes 
 
   *Done when:* an existing `data/dues.sqlite` upgrades cleanly and the current dashboard still works.
 
-- [ ] **14. Write the status rule as one small function, and test it.**
+- [x] **14. Write the status rule as one small function, and test it.**
   `taskStatus(task, openBlock, today)` goes in `src/lib/tasks.ts`, shared by the server and the pages.
   Add tests with Node's built-in test runner (`node --test`, no new dependencies). They should cover each status, the no-due-date case, a task that is both blocked and past due, and a date change at midnight.
   *Done when:* the tests pass.
 
-- [ ] **15. Build the task API (still dev-only).**
+- [x] **15. Build the task API (still dev-only).**
   Endpoints for: create a task, list my tasks, edit a task, mark done, reopen, block (reason required, blocked date defaults to today), and **Received** (unblocks the task).
   Each change writes a `task_events` row.
   Employees can only touch their own tasks; admins can read everyone's.
   *Done when:* each endpoint has been exercised with curl, including the permission checks.
 
-- [ ] **16. Build the "My tasks" page. It replaces the daily report editor.**
+- [x] **16. Build the "My tasks" page. It replaces the daily report editor.**
   - At the top, a one-line **quick add**: brand (searchable), work section (searchable), task, due date, and the live job code. Press Enter to add.
   - Below it, the tasks group themselves automatically into **Overdue → Due today → Blocked → Coming up**, with a collapsed **Done (last 7 days)** list.
   - Each task shows a coloured status dot, "2 days late" or "in 3 days", and its job code.
 
   *Done when:* a task you add with yesterday's date appears under Overdue with no other input, and moves to Due today if you change its date to today.
 
-- [ ] **17. Build the task panel: click a task to act on it.**
+- [x] **17. Build the task panel: click a task to act on it.**
   - Clicking a task opens a side panel with **Mark done**, **Blocked**, **Edit** and the task's history.
   - **Blocked** asks for a reason (required), what or who it's waiting on (for example "Images from designer"), and the date it became blocked (defaults to today).
   - While blocked, the panel shows the reason and "Blocked for 3 days", with a **Received** tick. Ticking it unblocks the task and it drops back into its date group.
@@ -160,35 +160,37 @@ The Asana question ("Board matches this table: yes/no, what you fixed") becomes 
 
   *Done when:* you can go block → received → done on one task, and all three steps show in its history.
 
-- [ ] **18. Ask for a reason when a late due date moves.**
+- [x] **18. Ask for a reason when a late due date moves.**
   If a task is overdue and its due date is moved later, ask "Why?" and save the reason in the history log.
   This keeps the "new date and why" column from your original sheet.
   *Done when:* the admin can see the old date, the new date and the reason.
 
-- [ ] **19. Add the daily check-in.**
+- [x] **19. Add the daily check-in.**
   A small card at the top of My tasks: "Asana board matches my tasks: yes / no". If no, it asks what you fixed this morning. It's answered once a day.
   Admins see who has checked in today and who hasn't.
   *Done when:* the admin daily sheet lists missing check-ins.
 
-- [ ] **20. Show the job code live.**
+- [x] **20. Show the job code live.**
   **Needs:** your job code rules.
   The existing codes (`EVC-0326-WEB-Website`, `BDF-0926-EVENT-Event Kit`, `NTR-0426-CRV-Branding`) suggest *brand code – MMYY – section code – section name*. Confirm or correct this before building.
   - Implement the rule in `src/lib/jobCode.ts`, with tests.
   - The quick-add row and the task panel recalculate the code on every change to brand, section or date, and highlight it when it changes ("BDF-0926-WEB → BDF-0926-EVENT").
   - The code is saved on the task, and any later change is recorded in its history.
   - Brands or sections without a code show which code is missing instead of "Auto".
+  > **Done 2026-09-21, on an assumed rule:** `src/lib/jobCode.ts` uses the pattern above, with MMYY = the month the task was opened, and it’s covered by tests. **Please confirm or correct the rule.** Only that one file changes if it’s wrong.
 
   *Done when:* changing the section in the panel visibly updates the code, and the history records it.
 
-- [ ] **21. Point the admin daily sheet and calendar at tasks.**
+- [x] **21. Point the admin daily sheet and calendar at tasks.**
   Same colours and filters as now, but read directly from `tasks` (this removes the "latest report" guesswork).
   Blocked tasks show their reason, what they're waiting on and how many days they've been blocked. Add a **Blocked** filter so admins can chase what's waiting on whom.
   *Done when:* the sheet and calendar match the My tasks page for the same person.
 
-- [ ] **22. Move the old report data into tasks, then retire the old report screens.**
+- [x] **22. Move the old report data into tasks, then retire the old report screens.**
   Write a one-time script that turns each person's latest report rows into tasks (rows ticked done become done tasks).
   Then remove the report editor, Carry over, the history page and the old report API and tables (schema v4).
   *Done when:* the dashboard has no report screens left and `npm run check` passes.
+  > **Done 2026-09-21:** schema v4 migration converts each person’s latest report on first start, then drops `reports`/`report_items`. The report editor, Carry over, History page, report API and admin Reports tab are gone; the nav is now My tasks / Admin.
 
 ## Phase 5 — Going online (highest risk, do last)
 

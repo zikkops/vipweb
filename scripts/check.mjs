@@ -28,6 +28,7 @@ function countHtml(dir) {
 try {
   run("Typecheck", "npx tsc --noEmit");
   run("Lint", "npx eslint .");
+  run("Tests", "npm test");
   run("Build", "npx next build");
 } catch {
   process.exit(1);

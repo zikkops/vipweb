@@ -1,18 +1,26 @@
-import type { Tag } from "@/lib/dues";
+// Job codes, e.g. `BDF-0926-EVENT-Event Kit`.
+//
+// Rule (inferred from the existing codes EVC-0326-WEB-Website,
+// BDF-0926-EVENT-Event Kit and NTR-0426-CRV-Branding — confirm or correct):
+//   <brand code>-<MMYY the task was opened>-<section code>-<section name>
+// Change it here; the pages, the API and the tests all use this function.
 
-/**
- * Builds the job code for a report row.
- *
- * The rules have not been supplied yet, so this returns null and the UI shows
- * "Auto". Existing codes such as `BDF-0926-EVENT-Event Kit` suggest
- * brand code, month/year, section code and section name — which is why brands
- * and sections already carry a `code` — but nothing is assumed until the rules
- * are confirmed.
- */
-export function generateJobCode(
-  _brand: Tag | undefined,
-  _section: Tag | undefined,
-  _reportDate: string
-): string | null {
-  return null;
+type Named = { name: string; code: string | null };
+
+export type JobCode = {
+  code: string | null;
+  /** What has to be filled in before a code can be made, for the UI to show. */
+  missing: string[];
+};
+
+export function jobCode(brand: Named | undefined, section: Named | undefined, openedOn: string): JobCode {
+  const missing: string[] = [];
+  if (!brand) missing.push("a brand");
+  else if (!brand.code) missing.push(`a code for ${brand.name}`);
+  if (!section) missing.push("a work section");
+  else if (!section.code) missing.push(`a code for ${section.name}`);
+  if (missing.length || !brand?.code || !section?.code) return { code: null, missing };
+
+  const [year, month] = openedOn.split("-");
+  return { code: `${brand.code}-${month}${year.slice(2)}-${section.code}-${section.name}`, missing };
 }

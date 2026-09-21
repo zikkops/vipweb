@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/components/dashboard/api";
 import DailySheet from "@/components/dashboard/DailySheet";
 import DueCalendar from "@/components/dashboard/DueCalendar";
-import ReportView from "@/components/dashboard/ReportView";
 import { useUser } from "@/components/dashboard/Session";
+import TaskPanel from "@/components/dashboard/tasks/TaskPanel";
+import { useTasks } from "@/components/dashboard/tasks/useTasks";
 import { BUTTON, BUTTON_SOLID, INPUT, LABEL, PAGE_TITLE } from "@/components/dashboard/ui";
-import { useTags, type Tags } from "@/components/dashboard/useTags";
-import { BUCKETS, localToday, type Report, type Tag, type TagKind, type User } from "@/lib/dues";
+import { useTags } from "@/components/dashboard/useTags";
+import type { Tag, TagKind, User } from "@/lib/dues";
 
 const TABS = [
   { key: "sheet", label: "Daily sheet" },
   { key: "calendar", label: "Calendar" },
-  { key: "reports", label: "Reports" },
   { key: "tags", label: "Tags" },
   { key: "people", label: "People" },
 ] as const;
@@ -24,11 +24,18 @@ export default function AdminPage() {
   const router = useRouter();
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("sheet");
   const { tags, error: tagsError, reload: reloadTags } = useTags();
+  const { tasks, error: tasksError, replace } = useTasks(true);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   useEffect(() => {
     if (user.role !== "admin") router.replace("/dashboard/");
   }, [user, router]);
   if (user.role !== "admin") return null;
+
+  const people = [...new Map((tasks ?? []).map((t) => [t.userId, { id: t.userId, name: t.userName }])).values()].sort(
+    (a, b) => a.name.localeCompare(b.name)
+  );
+  const open = (task: { id: number }) => setOpenId(task.id);
 
   return (
     <div>
@@ -36,7 +43,10 @@ export default function AdminPage() {
         Admin<span className="text-accent">_</span>
       </h1>
 
-      <div role="tablist" className="mt-6 flex gap-6 overflow-x-auto [scrollbar-width:none] shadow-[inset_0_-1px_0_var(--color-hairline)]">
+      <div
+        role="tablist"
+        className="mt-6 flex gap-6 overflow-x-auto [scrollbar-width:none] shadow-[inset_0_-1px_0_var(--color-hairline)]"
+      >
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -52,17 +62,15 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {tagsError && <p className="mt-6 text-sm text-brand-coral">{tagsError}</p>}
+      {(tagsError || tasksError) && <p className="mt-6 text-sm text-brand-coral">{tagsError || tasksError}</p>}
 
       <div className="mt-8">
-        {!tags ? (
+        {!tags || !tasks ? (
           <p className="py-16 text-center text-sm text-muted">Loading…</p>
         ) : tab === "sheet" ? (
-          <DailySheet tags={tags} />
+          <DailySheet tasks={tasks} tags={tags} onOpen={open} />
         ) : tab === "calendar" ? (
-          <DueCalendar tags={tags} />
-        ) : tab === "reports" ? (
-          <ReportsTab tags={tags} />
+          <DueCalendar tasks={tasks} people={people} tags={tags} onOpen={open} />
         ) : tab === "tags" ? (
           <div className="grid gap-6 lg:grid-cols-2">
             <TagManager kind="brand" title="Brands" tags={tags.brands} onChanged={reloadTags} />
@@ -72,103 +80,15 @@ export default function AdminPage() {
           <PeopleTab me={user} />
         )}
       </div>
-    </div>
-  );
-}
 
-// ---- reports ---------------------------------------------------------------
-
-type Entry = { user: { id: number; name: string; email: string; role: string }; report: Report | null };
-
-function ReportsTab({ tags }: { tags: Tags }) {
-  const [date, setDate] = useState(localToday());
-  const [entries, setEntries] = useState<Entry[] | null>(null);
-  const [open, setOpen] = useState<number | null>(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- clear while the new date loads
-    setEntries(null);
-    setError("");
-    api<{ entries: Entry[] }>(`admin/reports/?date=${date}`)
-      .then(({ entries }) => !cancelled && setEntries(entries))
-      .catch((err) => !cancelled && setError(errorMessage(err)));
-    return () => {
-      cancelled = true;
-    };
-  }, [date]);
-
-  const submitted = entries?.filter((e) => e.report).length ?? 0;
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-end gap-6">
-        <div>
-          <label className={LABEL} htmlFor="admin-date">
-            Date
-          </label>
-          <input
-            id="admin-date"
-            type="date"
-            className={`${INPUT} w-auto`}
-            value={date}
-            onChange={(e) => e.target.value && setDate(e.target.value)}
-          />
-        </div>
-        {entries && (
-          <p className="pb-2 text-sm text-muted">
-            {submitted} of {entries.length} submitted
-          </p>
-        )}
-      </div>
-
-      {error && <p className="mt-6 text-sm text-brand-coral">{error}</p>}
-
-      {entries && (
-        <ul className="mt-6 space-y-3">
-          {entries.map(({ user, report }) => {
-            const expanded = open === user.id;
-            const counts = BUCKETS.map((b) => ({
-              ...b,
-              n: report?.items.filter((i) => i.bucket === b.key).length ?? 0,
-            }));
-            return (
-              <li key={user.id} className="border border-hairline bg-paper">
-                <button
-                  className="flex w-full flex-wrap items-center gap-x-6 gap-y-2 px-5 py-4 text-left disabled:cursor-default"
-                  onClick={() => setOpen(expanded ? null : user.id)}
-                  disabled={!report}
-                  aria-expanded={report ? expanded : undefined}
-                >
-                  <span className="min-w-48">
-                    <span className="block font-heading text-lg">{user.name}</span>
-                    <span className="block text-xs text-muted">{user.email}</span>
-                  </span>
-                  {report ? (
-                    <>
-                      <span className="flex flex-wrap gap-4 text-sm">
-                        {counts.map((c) => (
-                          <span key={c.key} className={c.n ? "" : "text-muted-light"}>
-                            {c.label}: {c.n}
-                          </span>
-                        ))}
-                      </span>
-                      <span className="ml-auto text-sm text-accent">{expanded ? "Hide" : "View"}</span>
-                    </>
-                  ) : (
-                    <span className="ml-auto text-sm text-brand-coral">Not submitted</span>
-                  )}
-                </button>
-                {expanded && report && (
-                  <div className="border-t border-hairline px-5 py-5">
-                    <ReportView report={report} tags={tags} />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+      {openId !== null && tags && (
+        <TaskPanel
+          taskId={openId}
+          tags={tags}
+          canEdit={(t) => t.userId === user.id}
+          onClose={() => setOpenId(null)}
+          onChanged={replace}
+        />
       )}
     </div>
   );
