@@ -270,4 +270,42 @@ create policy "checkins: edit own" on public.checkins
 
 insert into public.sections (name, code) values
   ('Website', 'WEB'), ('Branding', 'CRV'), ('Event Kit', 'EVENT'), ('Design', null), ('Social Media', null), ('App', null);
-insert into public.brands (name, code) values ('Eventcom', 'EVC'), ('Naturea', 'NTR'), ('Beirut Duty Free', 'BDF');
+-- Clients from src/data/clients.ts, plus brands seen in existing job codes.
+insert into public.brands (name, code) values
+  ('LIVV Homes', null),
+  ('88 Chocolate Creations', null),
+  ('Honorary Consulate of Lebanon in Nevada', null),
+  ('Tigre Milano', null),
+  ('Adel Real Estate', null),
+  ('Growth Luxury Homes', null),
+  ('BIAF', null),
+  ('Otonomus Hotel', null),
+  ('VIO Autism Support & Awareness', null),
+  ('Stephany Ibrams', null),
+  ('Nevada Consular Corps', null),
+  ('ATI', null),
+  ('Mac Mena Group', null),
+  ('Growth Luxury Realty', null),
+  ('Clear Water', null),
+  ('EPIK Cash Car Rental', null),
+  ('The Best of Beverly Hills', null),
+  ('Growth Holdings', null),
+  ('Gozilla', null),
+  ('Philippe Ziade', null),
+  ('Cherry M', null),
+  ('Nawraj', null),
+  ('The Christian Council for Coordination', null),
+  ('Al Sahem', null),
+  ('Charles Hanna', null),
+  ('The Source', null),
+  ('QUIN', null),
+  ('MedSpa LV', null),
+  ('Humanity Work', null),
+  ('Vegas Meets World', null),
+  ('Voices Project', null),
+  ('Minipolis', null),
+  ('Twyly', null),
+  ('Beirut Duty Free', 'BDF'),
+  ('TAJ', null),
+  ('Eventcom', 'EVC'),
+  ('Naturea', 'NTR');
