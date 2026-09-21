@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -8,24 +8,22 @@ import type { Client } from "@/data/clients";
 
 export default function ClientsLogoGrid({ clients }: { clients: Client[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [delays, setDelays] = useState<number[]>(() => clients.map(() => 0));
-  const [dimDelays, setDimDelays] = useState<number[]>(() => clients.map(() => 0));
-
-  useEffect(() => {
-    setDelays(clients.map(() => Math.random() * 0.8));
-
+  // Random fade-in delays, and a shuffled order for the hover dim sweep. Both only
+  // time animations (nothing in the markup), so they are picked once on mount.
+  const [delays] = useState<number[]>(() => clients.map(() => Math.random() * 0.8));
+  const [dimDelays] = useState<number[]>(() => {
     const order = clients.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [order[i], order[j]] = [order[j], order[i]];
     }
     const step = 0.06;
-    const shuffledDelays = new Array(clients.length);
+    const shuffled = new Array<number>(clients.length);
     order.forEach((originalIndex, rank) => {
-      shuffledDelays[originalIndex] = rank * step;
+      shuffled[originalIndex] = rank * step;
     });
-    setDimDelays(shuffledDelays);
-  }, [clients]);
+    return shuffled;
+  });
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-14">

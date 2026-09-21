@@ -34,31 +34,31 @@ The build must still produce **25 HTML pages** in `out/` and **no** `out/dashboa
 
 ## Phase 0 — Safety net (no behavior change)
 
-- [ ] **1. Commit the dashboard work on a branch, not `main`.**
+- [x] **1. Commit the dashboard work on a branch, not `main`.**
   `main` auto-deploys to Hostinger. Create `dashboard`, commit everything currently uncommitted, and push that branch.
   *Done when:* `git status` is clean and `main` is untouched.
 
-- [ ] **2. Add a `npm run check` script.**
+- [x] **2. Add a `npm run check` script.**
   One command that runs typecheck, lint and build, then fails if `out/` doesn't have exactly 25 HTML pages or contains `dashboard/` or `api/`.
   Use a small Node script in `scripts/`, with no new dependencies.
   *Done when:* `npm run check` passes, and fails when you temporarily rename `page.dev.tsx` → `page.tsx`.
 
 ## Phase 1 — Low-risk cleanup
 
-- [ ] **3. Stop the dev server from listening on your network.**
+- [x] **3. Stop the dev server from listening on your network.**
   Change the `dev` script to `next dev -H localhost` until Next is upgraded (task 7) and the dashboard goes online properly.
   *Done when:* the `dev` banner shows no "Network:" URL.
 
-- [ ] **4. Fix the lint error in `ClientsLogoGrid.tsx`.**
+- [x] **4. Fix the lint error in `ClientsLogoGrid.tsx`.**
   Compute the random delays and the shuffled order once, in a lazy `useState` initializer or `useMemo`, instead of in `useEffect`. The logos must still fade in at random.
   *Done when:* `npx eslint .` shows 0 errors, and the logo wall still animates.
 
-- [ ] **5. Delete unused components and data.**
+- [x] **5. Delete unused components and data.**
   Delete `AutoplayVideo`, `AwardCard`, `NewsCard`, `PhoneMockup`, `PlaceholderMedia`, `RotatingIcon`, `TeamShowcase`, `TestimonialCard` and `src/data/awards.ts`.
   Re-check each one with a search for its name first.
   *Done when:* `npm run check` passes.
 
-- [ ] **6. Delete `public/videos/`.**
+- [x] **6. Delete `public/videos/`.**
   Nothing references it: `hero-wave.mp4`, `beirut-duty-free-film.mp4` and `generic-showcase.mp4` (14 MB).
   Keep a copy outside the repo if you might reuse the films.
   *Done when:* the `out/` size drops by about 14 MB and the site looks the same.
