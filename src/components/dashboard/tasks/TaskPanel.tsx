@@ -16,7 +16,7 @@ import { STATUS_STYLE, formatDay } from "../board";
 import Combobox from "../Combobox";
 import { BUTTON, BUTTON_SOLID, INPUT, LABEL } from "../ui";
 import type { Tags } from "../useTags";
-import JobCodePreview from "./JobCodePreview";
+import JobCodeFields, { useJobCodes } from "./JobCodeFields";
 import { StatusDot, timing } from "./TaskGroups";
 
 type Mode = "view" | "block" | "edit";
@@ -114,6 +114,7 @@ export default function TaskPanel({
               <h2 className={`font-heading text-3xl normal-case ${status === "done" ? "line-through decoration-muted" : ""}`}>
                 {task.title}
               </h2>
+              {task.description && <p className="mt-2 whitespace-pre-line text-sm text-muted">{task.description}</p>}
               <dl className="mt-3 grid grid-cols-[7rem_1fr] gap-y-1 text-sm">
                 {!editable && (
                   <>
@@ -121,9 +122,9 @@ export default function TaskPanel({
                     <dd>{task.userName}</dd>
                   </>
                 )}
-                <dt className="text-muted">Brand</dt>
+                <dt className="text-muted">Client</dt>
                 <dd>{tags.brands.find((t) => t.id === task.brandId)?.name ?? "—"}</dd>
-                <dt className="text-muted">Work section</dt>
+                <dt className="text-muted">Type of work</dt>
                 <dd>{tags.sections.find((t) => t.id === task.sectionId)?.name ?? "—"}</dd>
                 <dt className="text-muted">Job code</dt>
                 <dd className="font-heading tracking-wider">{task.jobCode ?? <span className="text-muted-light">Not set</span>}</dd>
@@ -300,24 +301,42 @@ function EditForm({
   today: string;
   busy: boolean;
   onCancel: () => void;
-  onSubmit: (body: { brandId: number; sectionId: number; title: string; dueDate: string | null; reason?: string }) => void;
+  onSubmit: (body: {
+    brandId: number;
+    sectionId: number;
+    title: string;
+    description: string;
+    dueDate: string | null;
+    reason?: string;
+    parentCode?: string | null;
+  }) => void;
 }) {
   const [brandId, setBrandId] = useState(task.brandId);
   const [sectionId, setSectionId] = useState(task.sectionId);
   const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description);
   const [dueDate, setDueDate] = useState(task.dueDate ?? "");
   const [reason, setReason] = useState("");
+  const [parentCode, setParentCode] = useState<string | null>(null);
+  const { codes } = useJobCodes();
 
   const newDue = dueDate || null;
   const askWhy = newDue !== task.dueDate && needsSlipReason(task, newDue, today);
-  const codeMoves = brandId !== task.brandId || sectionId !== task.sectionId;
 
   return (
     <form
       className="space-y-4 border border-hairline p-4"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit({ brandId, sectionId, title, dueDate: newDue, ...(askWhy ? { reason } : {}) });
+        onSubmit({
+          brandId,
+          sectionId,
+          title,
+          description,
+          dueDate: newDue,
+          ...(askWhy ? { reason } : {}),
+          ...(task.jobCode ? {} : { parentCode }),
+        });
       }}
     >
       <p className="font-heading text-lg">Edit task</p>
@@ -327,28 +346,53 @@ function EditForm({
         </label>
         <input id="edit-title" required className={INPUT} value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
+      <div>
+        <label className={LABEL} htmlFor="edit-description">
+          Description <span className="normal-case tracking-normal text-muted-light">(optional, not part of the job code)</span>
+        </label>
+        <textarea
+          id="edit-description"
+          rows={3}
+          maxLength={2000}
+          className={INPUT}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <span className={LABEL}>Brand</span>
-          <Combobox label="Brand" tags={tags.brands} value={brandId} onChange={setBrandId} />
+          <span className={LABEL}>Client</span>
+          <Combobox label="Client" tags={tags.brands} value={brandId} onChange={setBrandId} />
         </div>
         <div>
-          <span className={LABEL}>Work section</span>
-          <Combobox label="Work section" tags={tags.sections} value={sectionId} onChange={setSectionId} />
+          <span className={LABEL}>Type of work</span>
+          <Combobox label="Type of work" tags={tags.sections} value={sectionId} onChange={setSectionId} />
         </div>
       </div>
-      <div className="text-sm">
-        <span className={LABEL}>Job code</span>
-        {codeMoves ? (
-          <JobCodePreview
-            brand={tags.brands.find((t) => t.id === brandId)}
-            section={tags.sections.find((t) => t.id === sectionId)}
-            openedOn={task.createdOn}
-          />
-        ) : (
-          <span className="font-heading tracking-wider">{task.jobCode ?? "—"}</span>
-        )}
-      </div>
+      {task.jobCode ? (
+        <div className="text-sm">
+          <span className={LABEL}>Job code</span>
+          <span className="font-heading tracking-wider">{task.jobCode}</span>
+          <p className="mt-1 text-xs text-muted">A job code never changes, even if the task is renamed or moved.</p>
+        </div>
+      ) : (
+        <JobCodeFields
+          tags={tags}
+          brandId={brandId}
+          sectionId={sectionId}
+          title={title}
+          openedAt={new Date(task.createdAt)}
+          parentCode={parentCode}
+          codes={codes}
+          onParent={(parent) => {
+            setParentCode(parent?.code ?? null);
+            if (parent) {
+              setBrandId(parent.brandId);
+              setSectionId(parent.sectionId);
+            }
+          }}
+        />
+      )}
       <div>
         <label className={LABEL} htmlFor="edit-due">
           Due date
@@ -392,7 +436,7 @@ function describe(e: TaskEvent): string {
     case "due_changed":
       return `Due date ${day(e.fromValue)} → ${day(e.toValue)}${e.note ? ` — ${e.note}` : ""}`;
     case "job_code_changed":
-      return `Job code ${e.fromValue ?? "none"} → ${e.toValue ?? "none"}`;
+      return e.fromValue ? `Job code ${e.fromValue} → ${e.toValue ?? "none"}` : `Job code set to ${e.toValue}`;
     case "blocked":
       return `Blocked since ${day(e.fromValue)}: ${e.note}${e.toValue ? ` (waiting on ${e.toValue})` : ""}`;
     case "received":

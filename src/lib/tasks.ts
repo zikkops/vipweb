@@ -33,9 +33,13 @@ export type Task = {
   brandId: number;
   sectionId: number;
   title: string;
+  /** Free text that clarifies the task. Not part of the job code. */
+  description: string;
   dueDate: string | null;
   jobCode: string | null;
   createdOn: string;
+  /** When the task was saved; its Beirut month dates the job code. */
+  createdAt: string;
   doneOn: string | null;
   blocks: TaskBlock[];
   updatedAt: string;

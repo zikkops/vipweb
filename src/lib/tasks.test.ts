@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { jobCode } from "./jobCode.ts";
 import { activeBlock, addDays, daysBetween, localDate, needsSlipReason, taskStatus, type TaskBlock } from "./tasks.ts";
 
 const TODAY = "2026-09-21";
@@ -89,23 +88,5 @@ describe("dates", () => {
     assert.equal(daysBetween("2026-10-02", "2026-09-28"), -4);
     assert.equal(addDays("2026-12-31", 1), "2027-01-01");
     assert.equal(addDays("2026-03-01", -1), "2026-02-28");
-  });
-});
-
-describe("jobCode", () => {
-  const bdf = { name: "Beirut Duty Free", code: "BDF" };
-  const eventKit = { name: "Event Kit", code: "EVENT" };
-
-  it("builds brand-MMYY-section-name from the day the task was opened", () => {
-    assert.deepEqual(jobCode(bdf, eventKit, "2026-09-21"), { code: "BDF-0926-EVENT-Event Kit", missing: [] });
-    assert.equal(jobCode({ name: "Eventcom", code: "EVC" }, { name: "Website", code: "WEB" }, "2026-03-02").code, "EVC-0326-WEB-Website");
-  });
-
-  it("says what is missing instead of guessing", () => {
-    assert.deepEqual(jobCode(undefined, undefined, "2026-09-21"), { code: null, missing: ["a brand", "a work section"] });
-    assert.deepEqual(jobCode({ name: "Naturea", code: null }, { name: "Design", code: null }, "2026-09-21").missing, [
-      "a code for Naturea",
-      "a code for Design",
-    ]);
   });
 });

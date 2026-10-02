@@ -5,7 +5,7 @@ import type { Tag } from "@/lib/dues";
 import { INPUT } from "./ui";
 
 /**
- * Searchable single-select dropdown for brands and work sections. Archived
+ * Searchable single-select dropdown for clients and types of work. Archived
  * tags are hidden from the list but still display if a saved row uses one.
  */
 export default function Combobox({

@@ -7,7 +7,7 @@
 
 import { createClient, type PostgrestError } from "@supabase/supabase-js";
 import { COMPANY_DOMAIN, isAllowedEmail, type Tag, type TagKind, type User } from "@/lib/dues";
-import { jobCode } from "@/lib/jobCode";
+import { commercialTerm, generateTagCode, jobCode } from "@/lib/jobCode";
 import { needsSlipReason, type Checkin, type Task, type TaskBlock, type TaskEvent, type TaskEventType } from "@/lib/tasks";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -27,6 +27,10 @@ function check<T>(result: { data: T; error: PostgrestError | null }): T {
   if (result.error) {
     const { code, message } = result.error;
     if (code === "42501") throw new Error("You don’t have permission to do that.");
+    if (code === "23505" && message.includes("tasks_job_code_key")) {
+      throw new Error("That job code is already in use. Rename the task to make it unique.");
+    }
+    if (code === "23505" && message.includes("code_key")) throw new Error("That code is already taken.");
     if (code === "23505") throw new Error("That name is already taken.");
     throw new Error(message);
   }
@@ -127,23 +131,47 @@ export async function listTags(): Promise<Tags> {
   return { brands: (check(brands) as Tag[]).sort(byName), sections: (check(sections) as Tag[]).sort(byName) };
 }
 
-function tagCode(code: string | null | undefined): string | null {
-  const value = (code ?? "").trim().toUpperCase();
-  if (value && !/^[A-Z0-9]{1,12}$/.test(value)) throw new Error("Codes use up to 12 letters and numbers.");
-  return value || null;
+/**
+ * The code a new client or type of work gets from its name: nobody types
+ * codes. `existing` is every tag of that kind, archived ones included, so a
+ * code is never reused.
+ */
+export function codeForTag(kind: TagKind, name: string, existing: Tag[]): string | null {
+  return generateTagCode(
+    name,
+    kind === "brand" ? "client" : "type",
+    existing.flatMap((t) => (t.code ? [t.code] : []))
+  );
 }
 
-export async function createTag(kind: TagKind, name: string, code: string) {
+export async function createTag(kind: TagKind, name: string, existing: Tag[]) {
   const trimmed = name.trim();
   if (!trimmed) throw new Error("Give it a name.");
-  check(await supabase.from(TAG_TABLE[kind]).insert({ name: trimmed, code: tagCode(code) }).select("id").single());
+  const code = codeForTag(kind, trimmed, existing);
+  if (!code) throw new Error("Use a name with letters in it, so it can get a code.");
+  check(await supabase.from(TAG_TABLE[kind]).insert({ name: trimmed, code }).select("id").single());
 }
 
-export async function updateTag(kind: TagKind, id: number, patch: { name?: string; code?: string | null; active?: boolean }) {
+/** Renames or archives a tag. Its code stays: job codes already carry it. */
+export async function updateTag(kind: TagKind, id: number, patch: { name?: string; active?: boolean }) {
   const row: Record<string, unknown> = { ...patch };
-  if ("code" in patch) row.code = tagCode(patch.code);
   if ("name" in patch) row.name = patch.name!.trim();
   check(await supabase.from(TAG_TABLE[kind]).update(row).eq("id", id).select("id").single());
+}
+
+/** Gives each of `tags` that has no code one generated from its name. Returns how many got one. */
+export async function generateMissingCodes(kind: TagKind, tags: Tag[], existing: Tag[]): Promise<number> {
+  const taken = [...existing];
+  let given = 0;
+  for (const tag of tags) {
+    if (tag.code) continue;
+    const code = codeForTag(kind, tag.name, taken);
+    if (!code) continue;
+    check(await supabase.from(TAG_TABLE[kind]).update({ code }).eq("id", tag.id).select("id").single());
+    taken.push({ ...tag, code });
+    given++;
+  }
+  return given;
 }
 
 // ---- tasks -------------------------------------------------------------------
@@ -154,9 +182,11 @@ type TaskRow = {
   brand_id: number;
   section_id: number;
   title: string;
+  description: string;
   due_date: string | null;
   job_code: string | null;
   created_on: string;
+  created_at: string;
   done_on: string | null;
   updated_at: string;
   profiles: { name: string } | null;
@@ -164,7 +194,7 @@ type TaskRow = {
 };
 
 const TASK_SELECT =
-  "id, user_id, brand_id, section_id, title, due_date, job_code, created_on, done_on, updated_at, profiles(name), task_blocks(id, reason, waiting_on, blocked_on, received_on)";
+  "id, user_id, brand_id, section_id, title, description, due_date, job_code, created_on, created_at, done_on, updated_at, profiles(name), task_blocks(id, reason, waiting_on, blocked_on, received_on)";
 
 function toTask(r: TaskRow): Task {
   const blocks: TaskBlock[] = r.task_blocks
@@ -177,9 +207,11 @@ function toTask(r: TaskRow): Task {
     brandId: r.brand_id,
     sectionId: r.section_id,
     title: r.title,
+    description: r.description,
     dueDate: r.due_date,
     jobCode: r.job_code,
     createdOn: r.created_on,
+    createdAt: r.created_at,
     doneOn: r.done_on,
     blocks,
     updatedAt: r.updated_at,
@@ -243,13 +275,48 @@ async function logEvents(taskId: number, events: EventInput[]) {
 
 const findTag = (tags: Tag[], id: number) => tags.find((t) => t.id === id);
 
+/** A job code in use, with the client and type of its task (for picking a sub-job's parent). */
+export type JobCodeInUse = { code: string; brandId: number; sectionId: number };
+
+/** Every job code in use, everyone's included: codes only, not whose they are. */
+export async function listJobCodes(): Promise<JobCodeInUse[]> {
+  const rows = check(await supabase.rpc("job_codes")) as { code: string; brand_id: number; section_id: number }[];
+  return rows.map((r) => ({ code: r.code, brandId: r.brand_id, sectionId: r.section_id }));
+}
+
+function refuseCommercial(text: string) {
+  const term = commercialTerm(text);
+  if (term) throw new Error(`Keep figures, prices and commercial terms out of task names and job codes (found “${term}”).`);
+}
+
+/**
+ * The code generated for a task from its client, type and name (or, for a
+ * sub-job, its parent and name). Null when the client has no code yet: an
+ * admin has to add one. Anything the person can fix themselves stops the save.
+ */
+function codeFor(tags: Tags, brandId: number, sectionId: number, title: string, parentCode: string | null, openedAt: Date) {
+  const client = findTag(tags.brands, brandId);
+  const { code, missing } = jobCode({ client, type: findTag(tags.sections, sectionId), name: title, openedAt, parent: parentCode });
+  if (code || (!parentCode && client && !client.code)) return code;
+  throw new Error(`The job code needs ${missing.join(" and ")}.`);
+}
+
 export async function createTask(
   tags: Tags,
-  input: { brandId: number; sectionId: number; title: string; dueDate: string | null; today: string }
+  input: {
+    brandId: number;
+    sectionId: number;
+    title: string;
+    description: string;
+    dueDate: string | null;
+    today: string;
+    parentCode: string | null;
+  }
 ): Promise<Task> {
   const title = input.title.trim();
   if (!title) throw new Error("Name the task.");
-  const code = jobCode(findTag(tags.brands, input.brandId), findTag(tags.sections, input.sectionId), input.today).code;
+  refuseCommercial(title);
+  const code = codeFor(tags, input.brandId, input.sectionId, title, input.parentCode, new Date());
   const { id } = check(
     await supabase
       .from("tasks")
@@ -257,6 +324,7 @@ export async function createTask(
         brand_id: input.brandId,
         section_id: input.sectionId,
         title,
+        description: input.description.trim(),
         due_date: input.dueDate,
         job_code: code,
         created_on: input.today,
@@ -271,21 +339,30 @@ export async function createTask(
 export async function updateTask(
   tags: Tags,
   task: Task,
-  patch: { brandId: number; sectionId: number; title: string; dueDate: string | null; reason?: string },
+  patch: {
+    brandId: number;
+    sectionId: number;
+    title: string;
+    description: string;
+    dueDate: string | null;
+    reason?: string;
+    parentCode?: string | null;
+  },
   today: string
 ): Promise<Task> {
   const title = patch.title.trim();
   if (!title) throw new Error("Name the task.");
+  refuseCommercial(title);
+  const description = patch.description.trim();
   const reason = patch.reason?.trim() ?? "";
   if (patch.dueDate !== task.dueDate && needsSlipReason(task, patch.dueDate, today) && !reason) {
     throw new Error("This task is overdue — say why the date is moving.");
   }
 
-  // The code keeps the month the task was opened; only brand/section move it.
-  const tagsMoved = patch.brandId !== task.brandId || patch.sectionId !== task.sectionId;
-  const code = tagsMoved
-    ? jobCode(findTag(tags.brands, patch.brandId), findTag(tags.sections, patch.sectionId), task.createdOn).code
-    : task.jobCode;
+  // A code never changes once set. A task without one gets it here, dated
+  // from when the task was opened.
+  const code =
+    task.jobCode ?? codeFor(tags, patch.brandId, patch.sectionId, title, patch.parentCode ?? null, new Date(task.createdAt));
 
   check(
     await supabase
@@ -294,6 +371,7 @@ export async function updateTask(
         brand_id: patch.brandId,
         section_id: patch.sectionId,
         title,
+        description,
         due_date: patch.dueDate,
         job_code: code,
         updated_at: new Date().toISOString(),
@@ -308,8 +386,9 @@ export async function updateTask(
   if (code !== task.jobCode) events.push({ type: "job_code_changed", from: task.jobCode, to: code });
   const changed = [
     title !== task.title && "task",
-    patch.brandId !== task.brandId && "brand",
-    patch.sectionId !== task.sectionId && "work section",
+    description !== task.description && "description",
+    patch.brandId !== task.brandId && "client",
+    patch.sectionId !== task.sectionId && "type of work",
   ].filter(Boolean);
   if (changed.length) events.push({ type: "edited", note: `Changed ${changed.join(", ")}` });
   await logEvents(task.id, events);

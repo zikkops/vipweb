@@ -8,7 +8,9 @@ import { readFileSync } from "node:fs";
 import { before, describe, it } from "node:test";
 import { PGlite } from "@electric-sql/pglite";
 
-const MIGRATION = new URL("../migrations/20260921000000_dues.sql", import.meta.url);
+const MIGRATIONS = ["20260921000000_dues.sql", "20260923000000_job_codes.sql"].map(
+  (name) => new URL(`../migrations/${name}`, import.meta.url)
+);
 
 const SUPABASE_STUB = `
   create role anon nologin;
@@ -55,7 +57,7 @@ async function addTask(uid, title) {
 before(async () => {
   db = new PGlite();
   await db.exec(SUPABASE_STUB);
-  await db.exec(readFileSync(MIGRATION, "utf8"));
+  for (const migration of MIGRATIONS) await db.exec(readFileSync(migration, "utf8"));
   await signUp(ADMIN, "Admin@VIPMINDS.com", "Admin");
   await signUp(RITA, "rita@vipminds.com", "Rita");
   await signUp(KARIM, "karim@vipminds.com", "Karim");
@@ -167,5 +169,95 @@ describe("people and tags", () => {
     await as(RITA, "insert into checkins (date, asana_matches) values ('2026-09-21', true)");
     assert.equal((await as(KARIM, "select * from checkins")).length, 0);
     assert.equal((await as(ADMIN, "select * from checkins")).length, 1);
+  });
+});
+
+describe("job codes", () => {
+  let bdf, soc, crv, month;
+  const insert = (uid, title, code, section = soc) =>
+    as(
+      uid,
+      "insert into tasks (brand_id, section_id, title, created_on, job_code) values ($1, $2, $3, '2026-09-21', $4) returning id",
+      [bdf, section, title, code]
+    );
+
+  before(async () => {
+    [{ id: bdf }] = (await db.query("select id from brands where code = 'BDF'")).rows;
+    [{ id: soc }] = (await db.query("select id from sections where code = 'SOC'")).rows;
+    [{ id: crv }] = (await db.query("select id from sections where code = 'CRV'")).rows;
+    [{ month }] = (await db.query("select to_char(now() at time zone 'Asia/Beirut', 'MMYY') as month")).rows;
+  });
+
+  it("turns work sections into the spec's types, and lets admins add more with 3 letter codes", async () => {
+    const rows = (await db.query("select code, name from sections where active order by code")).rows;
+    assert.equal(rows.length, 11);
+    assert.deepEqual(rows.find((r) => r.code === "CRV"), { code: "CRV", name: "Creative, design, artwork" });
+    await assert.rejects(as(ADMIN, "insert into sections (name, code) values ('Design', 'DESIGN')"), /sections_code_check/);
+    await assert.rejects(as(ADMIN, "insert into sections (name, code) values ('Social 2', 'SOC')"), /sections_code_key/);
+    await assert.rejects(as(RITA, "insert into sections (name, code) values ('Training', 'TRN')"), /row-level security/);
+    await as(ADMIN, "insert into sections (name, code) values ('Training', 'TRN')");
+  });
+
+  it("seeds the spec's clients and keeps client codes to 2 or 3 letters", async () => {
+    const codes = (await db.query("select code from brands where code is not null")).rows.map((r) => r.code);
+    for (const code of ["BDF", "PAC", "WB", "CAN", "DAN", "NAT", "GEM", "EVC", "VIP"]) assert.ok(codes.includes(code), code);
+    await assert.rejects(as(ADMIN, "insert into brands (name, code) values ('Candia Old', 'CANDIA')"), /brands_code_check/);
+    await assert.rejects(as(ADMIN, "insert into brands (name, code) values ('Beirut Duty Free 2', 'BDF')"), /brands_code_key/);
+  });
+
+  it("lets a client or type get a code once, then keeps it", async () => {
+    const [{ id }] = await as(ADMIN, "insert into brands (name) values ('Uncoded Client') returning id");
+    await as(ADMIN, "update brands set code = 'UC' where id = $1", [id]);
+    await assert.rejects(as(ADMIN, "update brands set code = 'UCL' where id = $1", [id]), /never changes/);
+    await assert.rejects(as(ADMIN, "update sections set code = 'XYZ' where code = 'SOC'"), /never changes/);
+    await as(ADMIN, "update sections set name = 'Social and content' where code = 'SOC'");
+  });
+
+  it("accepts a code that matches its client, type and month", async () => {
+    await insert(RITA, "September promotions", `BDF-${month}-SOC-SeptemberPromotions`);
+    const [{ id: trn }] = (await db.query("select id from sections where code = 'TRN'")).rows;
+    await insert(RITA, "Staff training", `BDF-${month}-TRN-StaffTraining`, trn);
+  });
+
+  it("rejects codes in the wrong format or for a different client, type or month", async () => {
+    await assert.rejects(insert(RITA, "x", `BDF-${month}-SOC-september promo`), /tasks_job_code_format/);
+    await assert.rejects(insert(RITA, "x", `BDF-${month}-CRV-Promo`), new RegExp(`must start with BDF-${month}-SOC-`));
+    await assert.rejects(insert(RITA, "x", "BDF-0125-SOC-Promo"), /must start with/);
+  });
+
+  it("blocks an identical code, whoever owns it and whatever its case", async () => {
+    await assert.rejects(insert(KARIM, "x", `BDF-${month}-SOC-SeptemberPromotions`), /tasks_job_code_key/);
+    await assert.rejects(insert(KARIM, "x", `BDF-${month}-SOC-SEPTEMBERPROMOTIONS`), /tasks_job_code_key/);
+  });
+
+  it("never changes a code once set, but lets a task without one get it later", async () => {
+    const [{ id }] = await insert(KARIM, "Story reels", null, crv);
+    await as(KARIM, "update tasks set job_code = $2 where id = $1", [id, `BDF-${month}-CRV-StoryReels`]);
+    await assert.rejects(
+      as(KARIM, "update tasks set job_code = $2 where id = $1", [id, `BDF-${month}-CRV-Reels`]),
+      /never changes/
+    );
+    await assert.rejects(as(KARIM, "update tasks set job_code = null where id = $1", [id]), /never changes/);
+    await as(KARIM, "update tasks set title = 'Renamed', section_id = $2 where id = $1", [id, soc]);
+  });
+
+  it("allows sub-jobs one level under an existing job only", async () => {
+    await insert(KARIM, "TVC", `BDF-${month}-SOC-SeptemberPromotions-TVC`);
+    await assert.rejects(insert(KARIM, "x", `BDF-${month}-SOC-NoSuchJob-TVC`), /no job/);
+    await assert.rejects(insert(KARIM, "x", `BDF-${month}-SOC-SeptemberPromotions-TVC-Cut`), /tasks_job_code_format/);
+  });
+
+  it("keeps a task's description apart from its code", async () => {
+    const [{ id }] = await insert(RITA, "Launch post", `BDF-${month}-SOC-LaunchPost`);
+    await as(RITA, "update tasks set description = 'Two posts, use the new photos' where id = $1", [id]);
+    const [row] = (await db.query("select description, job_code from tasks where id = $1", [id])).rows;
+    assert.deepEqual(row, { description: "Two posts, use the new photos", job_code: `BDF-${month}-SOC-LaunchPost` });
+    await assert.rejects(as(RITA, "update tasks set description = $2 where id = $1", [id, "x".repeat(2001)]), /check/);
+  });
+
+  it("lists every code to signed-in people, and nothing to visitors", async () => {
+    const codes = (await as(RITA, "select code from job_codes()")).map((r) => r.code);
+    assert.ok(codes.includes(`BDF-${month}-CRV-StoryReels`), "includes Karim's code");
+    await assert.rejects(as(null, "select code from job_codes()"), /permission denied/);
   });
 });

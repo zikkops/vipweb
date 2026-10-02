@@ -2,7 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createTag, errorMessage, listUsers, sendPasswordReset, updateTag, updateUser } from "@/components/dashboard/db";
+import {
+  codeForTag,
+  createTag,
+  errorMessage,
+  generateMissingCodes,
+  listUsers,
+  sendPasswordReset,
+  updateTag,
+  updateUser,
+} from "@/components/dashboard/db";
 import DailySheet from "@/components/dashboard/DailySheet";
 import DueCalendar from "@/components/dashboard/DueCalendar";
 import { useSession, useUser } from "@/components/dashboard/Session";
@@ -73,8 +82,8 @@ export default function AdminPage() {
           <DueCalendar tasks={tasks} people={people} tags={tags} onOpen={open} />
         ) : tab === "tags" ? (
           <div className="grid gap-6 lg:grid-cols-2">
-            <TagManager kind="brand" title="Brands" tags={tags.brands} onChanged={reloadTags} />
-            <TagManager kind="section" title="Work sections" tags={tags.sections} onChanged={reloadTags} />
+            <TagManager kind="brand" title="Clients" tags={tags.brands} onChanged={reloadTags} />
+            <TagManager kind="section" title="Types of work" tags={tags.sections} onChanged={reloadTags} />
           </div>
         ) : (
           <PeopleTab me={user} />
@@ -108,7 +117,6 @@ function TagManager({
   onChanged: () => Promise<void>;
 }) {
   const [name, setName] = useState("");
-  const [code, setCode] = useState("");
   const [filter, setFilter] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [error, setError] = useState("");
@@ -134,15 +142,14 @@ function TagManager({
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
-    const added = await run(() => createTag(kind, name, code));
-    if (added) {
-      setName("");
-      setCode("");
-    }
+    if (await run(() => createTag(kind, name, tags))) setName("");
   }
 
-  const patch = (tag: Tag, body: Partial<Pick<Tag, "name" | "code" | "active">>) =>
-    run(() => updateTag(kind, tag.id, body));
+  const patch = (tag: Tag, body: { name?: string; active?: boolean }) => run(() => updateTag(kind, tag.id, body));
+
+  const nextCode = name.trim() ? codeForTag(kind, name, tags) : null;
+  const uncoded = tags.filter((t) => t.active && !t.code);
+  const noun = kind === "brand" ? "client" : "type of work";
 
   const q = filter.trim().toLowerCase();
   const visible = tags.filter(
@@ -156,30 +163,36 @@ function TagManager({
         {title} <span className="text-muted">({tags.filter((t) => t.active).length})</span>
       </h2>
 
+      <p className="mt-2 text-sm text-muted">
+        Codes are generated from the name and never change, so job codes stay the same.
+      </p>
       <form onSubmit={add} className="mt-4 flex flex-wrap items-end gap-3">
         <div className="min-w-40 flex-1">
           <label className={LABEL} htmlFor={`${kind}-name`}>
-            New {kind === "brand" ? "brand" : "section"}
+            New {noun}
           </label>
           <input id={`${kind}-name`} className={INPUT} required value={name} onChange={(e) => setName(e.target.value)} />
         </div>
-        <div className="w-28">
-          <label className={LABEL} htmlFor={`${kind}-code`}>
-            Code
-          </label>
-          <input
-            id={`${kind}-code`}
-            className={`${INPUT} uppercase`}
-            placeholder={kind === "brand" ? "BDF" : "WEB"}
-            maxLength={12}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
+        <div className="w-20 pb-2 text-sm">
+          <span className={LABEL}>Code</span>
+          <span className="font-heading tracking-widest">{nextCode ?? <span className="text-muted-light">—</span>}</span>
         </div>
         <button type="submit" className={BUTTON_SOLID} disabled={busy}>
           Add
         </button>
       </form>
+
+      {uncoded.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-3 border border-hairline bg-surface p-3 text-sm">
+          <span className="flex-1">
+            {uncoded.length} {uncoded.length === 1 ? noun : kind === "brand" ? "clients" : "types of work"} {uncoded.length === 1 ? "has" : "have"} no
+            code yet, so {uncoded.length === 1 ? "its" : "their"} tasks get no job code.
+          </span>
+          <button className={BUTTON} disabled={busy} onClick={() => run(() => generateMissingCodes(kind, uncoded, tags))}>
+            Generate codes
+          </button>
+        </div>
+      )}
 
       {error && <p className="mt-3 text-sm text-brand-coral">{error}</p>}
 
@@ -221,28 +234,21 @@ function TagRow({
 }: {
   tag: Tag;
   busy: boolean;
-  onPatch: (body: Partial<Pick<Tag, "name" | "code" | "active">>) => Promise<boolean>;
+  onPatch: (body: { name?: string; active?: boolean }) => Promise<boolean>;
 }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(tag.name);
-  const [code, setCode] = useState(tag.code ?? "");
 
   if (editing) {
     return (
       <li className="flex flex-wrap items-center gap-2 py-2">
         <input aria-label="Name" className={`${INPUT} min-w-40 flex-1`} value={name} onChange={(e) => setName(e.target.value)} />
-        <input
-          aria-label="Code"
-          className={`${INPUT} w-24 uppercase`}
-          maxLength={12}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
+        <span className="w-16 font-heading text-xs tracking-widest text-muted">{tag.code ?? "—"}</span>
         <button
           className={BUTTON_SOLID}
           disabled={busy}
           onClick={async () => {
-            if (await onPatch({ name, code })) setEditing(false);
+            if (await onPatch({ name })) setEditing(false);
           }}
         >
           Save
@@ -251,7 +257,6 @@ function TagRow({
           className={BUTTON}
           onClick={() => {
             setName(tag.name);
-            setCode(tag.code ?? "");
             setEditing(false);
           }}
         >

@@ -24,7 +24,7 @@ export type TagKind = "brand" | "section";
 export type Tag = {
   id: number;
   name: string;
-  /** Short code used in job codes, e.g. BDF or WEB. A task gets no code until both its tags have one. */
+  /** Code used in job codes: a client's 2–3 letters (BDF) or a type of work (SOC). A task gets no code until its client has one. */
   code: string | null;
   active: boolean;
 };

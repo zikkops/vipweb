@@ -30,7 +30,7 @@ export default function BoardTable({
           <tr className="border-b border-hairline font-heading text-xs uppercase tracking-widest text-muted">
             <th className="py-2 pr-4 font-normal">Status</th>
             <th className="py-2 pr-4 font-normal">Who</th>
-            <th className="py-2 pr-4 font-normal">Brand / section</th>
+            <th className="py-2 pr-4 font-normal">Client / type</th>
             <th className="py-2 pr-4 font-normal">Job code</th>
             <th className="py-2 pr-4 font-normal">Task</th>
             <th className="py-2 pr-4 font-normal">Due date</th>
