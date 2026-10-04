@@ -31,7 +31,7 @@ try {
   run("Lint", "npx eslint .");
   run("Tests", "npm test");
   run("Database security (RLS) tests", "npm run test:rls");
-  run("Build", "npx next build");
+  run("Build", "npm run build");
 } catch {
   process.exit(1);
 }
