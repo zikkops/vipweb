@@ -46,10 +46,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   const refresh = useCallback(async () => {
     const profile = await currentProfile().catch(() => null);
-    if (profile && !profile.active) {
-      // Deactivated: the database already refuses everything, so sign out cleanly.
+    if (profile && (!profile.active || !profile.approved)) {
+      // Deactivated or not yet approved: the database already refuses everything, so sign out cleanly.
       await signOut();
-      setNotice("This account has been deactivated. Ask an admin to turn it back on.");
+      setNotice(
+        profile.active
+          ? "Your account is waiting for an admin to approve it. Try again once they have."
+          : "This account has been deactivated. Ask an admin to turn it back on."
+      );
       setUser(null);
     } else {
       setUser(profile);

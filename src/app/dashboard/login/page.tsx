@@ -36,7 +36,7 @@ export default function LoginPage() {
         await refresh();
       } else if (mode === "signup") {
         const needsConfirmation = await signUp(name, email, password);
-        if (needsConfirmation) setSent(`We sent a confirmation link to ${email.trim()}. Open it to finish creating your account.`);
+        if (needsConfirmation) setSent(`We sent a confirmation link to ${email.trim()}. Open it, then wait for an admin to approve your account.`);
         else await refresh();
       } else {
         await sendPasswordReset(email.trim().toLowerCase());
@@ -57,7 +57,7 @@ export default function LoginPage() {
       </h1>
       <p className="mt-2 text-sm text-muted">
         {mode === "login" && "Your daily tasks."}
-        {mode === "signup" && `Use your @${COMPANY_DOMAIN} email. The first account created becomes the admin.`}
+        {mode === "signup" && `Use your @${COMPANY_DOMAIN} email. An admin approves new accounts before they can sign in.`}
         {mode === "forgot" && "We’ll email you a link to choose a new password."}
       </p>
 

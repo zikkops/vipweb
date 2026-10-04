@@ -49,14 +49,23 @@ const dashboardUrl = (path = "") => `${window.location.origin}/dashboard/${path}
 
 // ---- people ------------------------------------------------------------------
 
-type ProfileRow = { id: string; email: string; name: string; role: User["role"]; active: boolean; created_at: string };
-const PROFILE_COLUMNS = "id, email, name, role, active, created_at";
+type ProfileRow = {
+  id: string;
+  email: string;
+  name: string;
+  role: User["role"];
+  active: boolean;
+  approved: boolean;
+  created_at: string;
+};
+const PROFILE_COLUMNS = "id, email, name, role, active, approved, created_at";
 const toUser = (r: ProfileRow): User => ({
   id: r.id,
   email: r.email,
   name: r.name,
   role: r.role,
   active: r.active,
+  approved: r.approved,
   createdAt: r.created_at,
 });
 
@@ -110,11 +119,19 @@ export async function changePassword(password: string) {
 }
 
 export async function listUsers(): Promise<User[]> {
-  const rows = check(await supabase.from("profiles").select(PROFILE_COLUMNS).order("active", { ascending: false }).order("name"));
+  // Accounts waiting for approval first, then active, then deactivated.
+  const rows = check(
+    await supabase
+      .from("profiles")
+      .select(PROFILE_COLUMNS)
+      .order("approved")
+      .order("active", { ascending: false })
+      .order("name")
+  );
   return (rows as ProfileRow[]).map(toUser);
 }
 
-export async function updateUser(id: string, patch: { role?: User["role"]; active?: boolean }) {
+export async function updateUser(id: string, patch: { role?: User["role"]; active?: boolean; approved?: boolean }) {
   check(await supabase.from("profiles").update(patch).eq("id", id).select("id").single());
 }
 

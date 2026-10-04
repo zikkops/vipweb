@@ -17,6 +17,8 @@ export type User = {
   createdAt: string;
   /** Deactivated accounts can’t sign in; their tasks stay for the record. */
   active: boolean;
+  /** New accounts wait for an admin to approve them before they can do anything. */
+  approved: boolean;
 };
 
 export type TagKind = "brand" | "section";

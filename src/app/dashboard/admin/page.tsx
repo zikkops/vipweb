@@ -305,7 +305,7 @@ function PeopleTab({ me }: { me: User }) {
     load();
   }, [load]);
 
-  async function update(user: User, body: { role?: User["role"]; active?: boolean }) {
+  async function update(user: User, body: { role?: User["role"]; active?: boolean; approved?: boolean }) {
     setError("");
     setNotice("");
     try {
@@ -331,11 +331,44 @@ function PeopleTab({ me }: { me: User }) {
 
   if (!users) return error ? <p className="text-sm text-brand-coral">{error}</p> : null;
 
+  // Waiting for approval: signed up, not yet approved, not declined.
+  const waiting = users.filter((u) => !u.approved && u.active);
+  const people = users.filter((u) => !waiting.includes(u));
+
   return (
     <div>
       {error && <p className="mb-4 text-sm text-brand-coral">{error}</p>}
 
       {notice && <p className="mb-4 text-sm text-accent">{notice}</p>}
+
+      {waiting.length > 0 && (
+        <section className="mb-6 border border-accent/40 bg-accent/5 p-5">
+          <h2 className="font-heading text-xl">
+            Waiting for approval <span className="text-muted">({waiting.length})</span>
+          </h2>
+          <ul className="mt-3 divide-y divide-hairline">
+            {waiting.map((u) => (
+              <li key={u.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 text-sm">
+                <span className="min-w-40 flex-1">
+                  {u.name} <span className="text-muted">· {u.email}</span>
+                  <span className="ml-2 text-muted">signed up {new Date(u.createdAt).toLocaleDateString()}</span>
+                </span>
+                <button className={BUTTON_SOLID} onClick={() => update(u, { approved: true })}>
+                  Approve
+                </button>
+                <button
+                  className={BUTTON}
+                  onClick={() => {
+                    if (confirm(`Decline ${u.name}? They won't be able to sign in.`)) update(u, { active: false });
+                  }}
+                >
+                  Decline
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="overflow-x-auto border border-hairline bg-paper">
         <table className="w-full min-w-[760px] border-collapse text-left text-sm">
@@ -349,14 +382,14 @@ function PeopleTab({ me }: { me: User }) {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => {
+            {people.map((u) => {
               const self = u.id === me.id;
               return (
                 <tr key={u.id} className={`border-b border-hairline last:border-0 ${u.active ? "" : "text-muted-light"}`}>
                   <td className="px-4 py-3">
                     {u.name}
                     {self && <span className="ml-2 text-muted">(you)</span>}
-                    {!u.active && <span className="ml-2 text-brand-coral">deactivated</span>}
+                    {!u.active && <span className="ml-2 text-brand-coral">{u.approved ? "deactivated" : "declined"}</span>}
                   </td>
                   <td className="px-4 py-3">{u.email}</td>
                   <td className="px-4 py-3 text-muted">{new Date(u.createdAt).toLocaleDateString()}</td>
@@ -384,7 +417,8 @@ function PeopleTab({ me }: { me: User }) {
                           className="text-muted hover:text-accent"
                           onClick={() => {
                             if (u.active && !confirm(`Deactivate ${u.name}? They'll be signed out and can't sign in.`)) return;
-                            update(u, { active: !u.active });
+                            // Reactivating a declined sign-up approves it too.
+                            update(u, u.active ? { active: false } : { active: true, approved: true });
                           }}
                         >
                           {u.active ? "Deactivate" : "Reactivate"}

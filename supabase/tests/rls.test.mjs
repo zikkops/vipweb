@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { before, describe, it } from "node:test";
 import { PGlite } from "@electric-sql/pglite";
 
-const MIGRATIONS = ["20260921000000_dues.sql", "20260923000000_job_codes.sql"].map(
+const MIGRATIONS = ["20260921000000_dues.sql", "20260923000000_job_codes.sql", "20261004000000_approve_signups.sql"].map(
   (name) => new URL(`../migrations/${name}`, import.meta.url)
 );
 
@@ -61,6 +61,37 @@ before(async () => {
   await signUp(ADMIN, "Admin@VIPMINDS.com", "Admin");
   await signUp(RITA, "rita@vipminds.com", "Rita");
   await signUp(KARIM, "karim@vipminds.com", "Karim");
+  // New accounts wait for approval; the rest of the suite works with approved ones.
+  await as(ADMIN, "update profiles set approved = true where id in ($1, $2)", [RITA, KARIM]);
+});
+
+describe("approval", () => {
+  const NEWBIE = "00000000-0000-0000-0000-00000000000d";
+  before(() => signUp(NEWBIE, "newbie@vipminds.com", "Newbie"));
+
+  it("approves the first account and makes everyone after it wait", async () => {
+    const rows = (await db.query("select email, approved from profiles where email in ('admin@vipminds.com', 'newbie@vipminds.com') order by email")).rows;
+    assert.deepEqual(rows, [
+      { email: "admin@vipminds.com", approved: true },
+      { email: "newbie@vipminds.com", approved: false },
+    ]);
+  });
+
+  it("gives a waiting account nothing, and doesn't let it approve itself", async () => {
+    assert.equal((await as(NEWBIE, "select id from brands")).length, 0);
+    await assert.rejects(addTask(NEWBIE, "too early"), /row-level security/);
+    assert.equal((await as(NEWBIE, "update profiles set approved = true where id = $1 returning id", [NEWBIE])).length, 0);
+    assert.equal((await as(RITA, "update profiles set approved = true where id = $1 returning id", [NEWBIE])).length, 0);
+    await assert.rejects(as(RITA, "update profiles set approved = false where id = $1", [RITA]), /Only admins/);
+    const [{ approved }] = (await db.query("select approved from profiles where id = $1", [NEWBIE])).rows;
+    assert.equal(approved, false);
+  });
+
+  it("lets an admin approve an account, which then works", async () => {
+    await as(ADMIN, "update profiles set approved = true where id = $1", [NEWBIE]);
+    assert.ok((await as(NEWBIE, "select id from brands")).length > 0);
+    await db.query("delete from auth.users where id = $1", [NEWBIE]);
+  });
 });
 
 describe("sign-up", () => {
