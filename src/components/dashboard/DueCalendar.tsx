@@ -5,8 +5,7 @@ import { localToday } from "@/lib/dues";
 import { TASK_STATUSES, addDays, taskStatus, type Task, type TaskStatus } from "@/lib/tasks";
 import BoardTable, { BoardFilters, applyFilter, type BoardFilter } from "./BoardTable";
 import { STATUS_STYLE, formatDay } from "./board";
-import ReportExport from "./ReportExport";
-import { BUTTON, BUTTON_SOLID } from "./ui";
+import { BUTTON } from "./ui";
 import type { Tags } from "./useTags";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -29,7 +28,6 @@ export default function DueCalendar({
   const [month, setMonth] = useState(today.slice(0, 7)); // YYYY-MM
   const [selected, setSelected] = useState<string | null>(today);
   const [filter, setFilter] = useState<BoardFilter>({ userId: null, brandId: null });
-  const [exporting, setExporting] = useState(false);
 
   const brand = (id: number) => tags.brands.find((t) => t.id === id)?.name ?? "—";
   const status = (t: Task) => taskStatus(t, today);
@@ -59,9 +57,6 @@ export default function DueCalendar({
     setMonth(d.toLocaleDateString("en-CA").slice(0, 7));
   };
   const dayItems = selected ? (byDay.get(selected) ?? []) : [];
-  const nextFirst = new Date(`${first}T12:00:00`);
-  nextFirst.setMonth(nextFirst.getMonth() + 1);
-  const last = addDays(`${nextFirst.toLocaleDateString("en-CA").slice(0, 7)}-01`, -1);
 
   return (
     <div>
@@ -85,16 +80,8 @@ export default function DueCalendar({
           <button className={BUTTON} onClick={() => shiftMonth(1)} aria-label="Next month">
             ›
           </button>
-          <button className={BUTTON_SOLID} onClick={() => setExporting((open) => !open)} aria-expanded={exporting}>
-            Export report
-          </button>
         </div>
       </div>
-
-      {exporting && (
-        // Keyed by month so opening it on another month starts from that month.
-        <ReportExport key={month} tasks={tasks} people={people} tags={tags} from={first} to={last} onClose={() => setExporting(false)} />
-      )}
 
       <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
         <BoardFilters tasks={tasks} people={people} tags={tags} filter={filter} onChange={setFilter} />

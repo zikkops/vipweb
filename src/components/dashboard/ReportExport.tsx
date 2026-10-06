@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { localToday } from "@/lib/dues";
+import { addDays } from "@/lib/tasks";
 import { REPORT_DATE_BY, reportFileName, reportRows, type ReportDateBy, type ReportFilter } from "@/lib/report";
 import type { Task } from "@/lib/tasks";
 import { formatDay } from "./board";
@@ -11,27 +12,29 @@ import type { Tags } from "./useTags";
 
 type Option<Id> = { id: Id; label: string };
 
+/** First and last day of the month `day` is in. */
+function monthOf(day: string) {
+  const next = new Date(`${day.slice(0, 7)}-01T12:00:00`);
+  next.setMonth(next.getMonth() + 1);
+  return { from: `${day.slice(0, 7)}-01`, to: addDays(`${next.toLocaleDateString("en-CA").slice(0, 7)}-01`, -1) };
+}
+
 /**
- * Export a task report as Excel or PDF: a time frame, which date counts, and
- * optionally some employees, clients and types of work (none ticked = all).
+ * The admin Reporting tab: export a task report as Excel or PDF for a time
+ * frame (this month to start with), by due, added or done date, optionally
+ * for some employees, clients and types of work (none ticked = all).
  */
 export default function ReportExport({
   tasks,
   people,
   tags,
-  from: initialFrom,
-  to: initialTo,
-  onClose,
 }: {
   tasks: Task[];
   people: { id: string; name: string }[];
   tags: Tags;
-  from: string;
-  to: string;
-  onClose: () => void;
 }) {
-  const [from, setFrom] = useState(initialFrom);
-  const [to, setTo] = useState(initialTo);
+  const [from, setFrom] = useState(() => monthOf(localToday()).from);
+  const [to, setTo] = useState(() => monthOf(localToday()).to);
   const [dateBy, setDateBy] = useState<ReportDateBy>("due");
   const [userIds, setUserIds] = useState<string[]>([]);
   const [brandIds, setBrandIds] = useState<number[]>([]);
@@ -72,13 +75,9 @@ export default function ReportExport({
   }
 
   return (
-    <section className="mt-6 border border-hairline bg-paper p-5 sm:p-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="font-heading text-2xl">Export a report</h2>
-        <button className="text-sm text-muted hover:text-accent" onClick={onClose}>
-          Close
-        </button>
-      </div>
+    <section className="border border-hairline bg-paper p-5 sm:p-6">
+      <h2 className="font-heading text-2xl">Export a task report</h2>
+      <p className="mt-1 text-sm text-muted">Pick a time frame and who or what it covers, then download it as Excel or PDF.</p>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-[repeat(3,minmax(0,12rem))]">
         <div>

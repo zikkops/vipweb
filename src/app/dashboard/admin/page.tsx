@@ -14,6 +14,7 @@ import {
 } from "@/components/dashboard/db";
 import DailySheet from "@/components/dashboard/DailySheet";
 import DueCalendar from "@/components/dashboard/DueCalendar";
+import ReportExport from "@/components/dashboard/ReportExport";
 import { useSession, useUser } from "@/components/dashboard/Session";
 import TaskPanel from "@/components/dashboard/tasks/TaskPanel";
 import { useTasks } from "@/components/dashboard/tasks/useTasks";
@@ -26,6 +27,7 @@ const TABS = [
   { key: "calendar", label: "Calendar" },
   { key: "tags", label: "Tags" },
   { key: "people", label: "People" },
+  { key: "reporting", label: "Reporting" },
 ] as const;
 
 export default function AdminPage() {
@@ -85,6 +87,8 @@ export default function AdminPage() {
             <TagManager kind="brand" title="Clients" tags={tags.brands} onChanged={reloadTags} />
             <TagManager kind="section" title="Types of work" tags={tags.sections} onChanged={reloadTags} />
           </div>
+        ) : tab === "reporting" ? (
+          <ReportExport tasks={tasks} people={people} tags={tags} />
         ) : (
           <PeopleTab me={user} />
         )}
